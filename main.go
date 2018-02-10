@@ -39,8 +39,10 @@ func main() {
 		for k, v := range quotes {
 			diff := maxLength - len(v.Price)
 			s := "    "
-			for i := 0; i < diff; i++ {
-				s += " "
+			if diff > 0 {
+				for i := 0; i < diff; i++ {
+					s += " "
+				}
 			}
 			spaces[k] = s
 		}
