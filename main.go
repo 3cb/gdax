@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"sync"
+	"os"
+	"os/exec"
+	"runtime"
 )
 
 func main() {
@@ -15,71 +14,45 @@ func main() {
 
 	pairs := []string{"BTC-USD", "BTC-EUR", "BTC-GBP", "ETH-USD", "ETH-BTC", "ETH-EUR", "LTC-USD", "LTC-BTC", "LTC-EUR"}
 
-	quotes := make(map[string]GDAXTrade)
-
 	if !*stream {
-		tradeCH := make(chan Currency, 9)
-		wg := &sync.WaitGroup{}
-		wg.Add(9)
-		for _, pair := range pairs {
-			go getTrades(pair, tradeCH, wg)
-		}
-		wg.Wait()
-
-		maxLength := 0
-		for i := 0; i < 9; i++ {
-			v := <-tradeCH
-			quotes[v.Name] = v.Trade
-			if len(v.Trade.Price) > maxLength {
-				maxLength = len(v.Trade.Price)
-			}
-		}
-
-		spaces := make(map[string]string)
-		for k, v := range quotes {
-			diff := maxLength - len(v.Price)
-			s := "    "
-			if diff > 0 {
-				for i := 0; i < diff; i++ {
-					s += " "
-				}
-			}
-			spaces[k] = s
-		}
-		println("\nGDAX Price Quotes:")
-		fmt.Printf("\nBTC/USD:%v%v\n", spaces["BTC-USD"], quotes["BTC-USD"].Price)
-		fmt.Printf("\nBTC/EUR:%v%v\n", spaces["BTC-EUR"], quotes["BTC-EUR"].Price)
-		fmt.Printf("\nBTC/GBP:%v%v\n", spaces["BTC-GBP"], quotes["BTC-GBP"].Price)
-		fmt.Printf("\nETH/USD:%v%v\n", spaces["ETH-USD"], quotes["ETH-USD"].Price)
-		fmt.Printf("\nETH/BTC:%v%v\n", spaces["ETH-BTC"], quotes["ETH-BTC"].Price)
-		fmt.Printf("\nETH/EUR:%v%v\n", spaces["ETH-EUR"], quotes["ETH-EUR"].Price)
-		fmt.Printf("\nLTC/USD:%v%v\n", spaces["LTC-USD"], quotes["LTC-USD"].Price)
-		fmt.Printf("\nLTC/BTC:%v%v\n", spaces["LTC-BTC"], quotes["LTC-BTC"].Price)
-		fmt.Printf("\nLTC/EUR:%v%v\n", spaces["LTC-EUR"], quotes["LTC-EUR"].Price)
+		quotes := make(map[string]GDAXTrade)
+		quoteSingle(pairs, quotes)
+	} else {
+		clear()
+		quoteStream(pairs)
 	}
 
 }
 
-func getTrades(pair string, tradeCH chan<- Currency, wg *sync.WaitGroup) {
-	slice := []GDAXTrade{}
+// clears terminal for linux, mac, and windows
+func clear() {
+	switch sys := runtime.GOOS; sys {
+	case "linux":
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	case "darwin":
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	case "windows":
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	default:
+		return
+	}
+}
 
-	api := "https://api.gdax.com/products/" + pair + "/trades?limit=1"
-	resp, err := http.Get(api)
-	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
-	}
-	defer resp.Body.Close()
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
-	}
-	err = json.Unmarshal(bytes, &slice)
-	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
-	}
-	tradeCH <- Currency{pair, slice[0]}
-	wg.Done()
+func print(spaces map[string]string, quotes map[string]GDAXTrade) {
+	println("\nGDAX Price Quotes:")
+	fmt.Printf("\nBTC/USD:%v%v\n", spaces["BTC-USD"], quotes["BTC-USD"].Price)
+	fmt.Printf("\nBTC/EUR:%v%v\n", spaces["BTC-EUR"], quotes["BTC-EUR"].Price)
+	fmt.Printf("\nBTC/GBP:%v%v\n", spaces["BTC-GBP"], quotes["BTC-GBP"].Price)
+	fmt.Printf("\nETH/USD:%v%v\n", spaces["ETH-USD"], quotes["ETH-USD"].Price)
+	fmt.Printf("\nETH/BTC:%v%v\n", spaces["ETH-BTC"], quotes["ETH-BTC"].Price)
+	fmt.Printf("\nETH/EUR:%v%v\n", spaces["ETH-EUR"], quotes["ETH-EUR"].Price)
+	fmt.Printf("\nLTC/USD:%v%v\n", spaces["LTC-USD"], quotes["LTC-USD"].Price)
+	fmt.Printf("\nLTC/BTC:%v%v\n", spaces["LTC-BTC"], quotes["LTC-BTC"].Price)
+	fmt.Printf("\nLTC/EUR:%v%v\n", spaces["LTC-EUR"], quotes["LTC-EUR"].Price)
 }
