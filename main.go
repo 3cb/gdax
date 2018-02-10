@@ -26,14 +26,19 @@ func main() {
 		}
 		wg.Wait()
 
+		maxLength := 0
 		for i := 0; i < 9; i++ {
 			v := <-tradeCH
 			quotes[v.Name] = v.Trade
+			if len(v.Trade.Price) > maxLength {
+				maxLength = len(v.Trade.Price)
+			}
 		}
+
 		spaces := make(map[string]string)
 		for k, v := range quotes {
-			diff := 16 - len(v.Price)
-			s := ""
+			diff := maxLength - len(v.Price)
+			s := "    "
 			for i := 0; i < diff; i++ {
 				s += " "
 			}
