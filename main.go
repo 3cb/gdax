@@ -30,16 +30,25 @@ func main() {
 			v := <-tradeCH
 			quotes[v.Name] = v.Trade
 		}
+		spaces := make(map[string]string)
+		for k, v := range quotes {
+			diff := 16 - len(v.Price)
+			s := ""
+			for i := 0; i < diff; i++ {
+				s += " "
+			}
+			spaces[k] = s
+		}
 		println("\nGDAX Price Quotes:")
-		fmt.Printf("\nBTC/USD: %v\n", quotes["BTC-USD"].Price)
-		fmt.Printf("\nBTC/EUR: %v\n", quotes["BTC-EUR"].Price)
-		fmt.Printf("\nBTC/GBP: %v\n", quotes["BTC-GBP"].Price)
-		fmt.Printf("\nETH/USD: %v\n", quotes["ETH-USD"].Price)
-		fmt.Printf("\nETH/BTC: %v\n", quotes["ETH-BTC"].Price)
-		fmt.Printf("\nETH/EUR: %v\n", quotes["ETH-EUR"].Price)
-		fmt.Printf("\nLTC/USD: %v\n", quotes["LTC-USD"].Price)
-		fmt.Printf("\nLTC/BTC: %v\n", quotes["LTC-BTC"].Price)
-		fmt.Printf("\nLTC/EUR: %v\n", quotes["LTC-EUR"].Price)
+		fmt.Printf("\nBTC/USD:%v%v\n", spaces["BTC-USD"], quotes["BTC-USD"].Price)
+		fmt.Printf("\nBTC/EUR:%v%v\n", spaces["BTC-EUR"], quotes["BTC-EUR"].Price)
+		fmt.Printf("\nBTC/GBP:%v%v\n", spaces["BTC-GBP"], quotes["BTC-GBP"].Price)
+		fmt.Printf("\nETH/USD:%v%v\n", spaces["ETH-USD"], quotes["ETH-USD"].Price)
+		fmt.Printf("\nETH/BTC:%v%v\n", spaces["ETH-BTC"], quotes["ETH-BTC"].Price)
+		fmt.Printf("\nETH/EUR:%v%v\n", spaces["ETH-EUR"], quotes["ETH-EUR"].Price)
+		fmt.Printf("\nLTC/USD:%v%v\n", spaces["LTC-USD"], quotes["LTC-USD"].Price)
+		fmt.Printf("\nLTC/BTC:%v%v\n", spaces["LTC-BTC"], quotes["LTC-BTC"].Price)
+		fmt.Printf("\nLTC/EUR:%v%v\n", spaces["LTC-EUR"], quotes["LTC-EUR"].Price)
 	}
 
 }
