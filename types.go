@@ -9,8 +9,8 @@ type GDAXTrade struct {
 	Side    string `json:"side"`
 }
 
-// Currency contains name and price of crypto currency only
+// Currency contains name and trade data of cryptocurrency
 type Currency struct {
 	Name  string
-	Price string
+	Trade GDAXTrade
 }
