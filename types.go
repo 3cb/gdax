@@ -1,8 +1,8 @@
 package main
 
-// State maintains up to date price and volume data for each cryptocurrency
-type State struct {
-	ProductID   string
+// Product maintains up to date price and volume data for a cryptocurrency pair
+type Product struct {
+	ID          string
 	DisplayName string
 	Price       string
 	BestBid     string
