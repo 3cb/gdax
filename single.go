@@ -1,65 +1,179 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
-func quoteSingle(pairs []string, quotes map[string]GDAXTrade) {
-	tradeCH := make(chan Currency, 9)
+func quoteSingle(state map[string]Product) {
+	tradeCh := make(chan Product, 9)
+	statsCh := make(chan Stats, 9)
+	tickerCh := make(chan Ticker, 9)
+
 	wg := &sync.WaitGroup{}
-	wg.Add(9)
-	for _, pair := range pairs {
-		go getTrades(pair, tradeCH, wg)
+	wg.Add(27)
+	for _, pair := range state {
+		go getTrades(pair.ID, tradeCh, wg)
+		go getStats(pair.ID, statsCh, wg)
+		go getTicker(pair.ID, tickerCh, wg)
 	}
 	wg.Wait()
 
-	maxLength := 0
+	max := MaxLengths{}
+
+	// set state from http response data
 	for i := 0; i < 9; i++ {
-		v := <-tradeCH
-		v.Trade.Price = round(v.Trade.Price)
-		quotes[v.Name] = v.Trade
-		if len(v.Trade.Price) > maxLength {
-			maxLength = len(v.Trade.Price)
-		}
+		product := Product{}
+
+		trade := <-tradeCh
+		product = state[trade.ID]
+		product.Price = rndPrice(trade.Price)
+		max.Price = getMax(max.Price, len(product.Price))
+		product.Size = rndSize(trade.Size)
+		max.Size = getMax(max.Size, len(product.Size))
+		state[trade.ID] = product
+
+		stats := <-statsCh
+		product = state[stats.ID]
+		product.Open = rndPrice(stats.Open)
+		max.Open = getMax(max.Open, len(product.Open))
+		product.High = rndPrice(stats.High)
+		max.High = getMax(max.High, len(product.High))
+		product.Low = rndPrice(stats.Low)
+		max.Low = getMax(max.Low, len(product.Low))
+		product.Volume = rndVol(stats.Volume)
+		max.Volume = getMax(max.Volume, len(product.Volume))
+		state[product.ID] = product
+
+		ticker := <-tickerCh
+		product = state[ticker.ID]
+		product.Bid = rndPrice(ticker.Bid)
+		max.Bid = getMax(max.Bid, len(product.Bid))
+		product.Ask = rndPrice(ticker.Ask)
+		max.Ask = getMax(max.Ask, len(product.Ask))
+		state[product.ID] = product
 	}
 
-	spaces := make(map[string]string)
-	for k, v := range quotes {
-		diff := maxLength - len(v.Price)
-		s := "    "
-		if diff > 0 {
-			for i := 0; i < diff; i++ {
-				s += " "
-			}
-		}
-		spaces[k] = s
+	// format spacing
+	for k, v := range state {
+		v.Price = setSpc(max.Price, v.Price)
+		v.Size = setSpc(max.Size, v.Size)
+		v.Bid = setSpc(max.Bid, v.Bid)
+		v.Ask = setSpc(max.Ask, v.Ask)
+		v.High = setSpc(max.High, v.High)
+		v.Low = setSpc(max.Low, v.Low)
+		v.Open = setSpc(max.Open, v.Open)
+		v.Volume = setSpc(max.Volume, v.Volume)
+
 	}
-	print(spaces, quotes)
+
+	print(state)
 }
 
-func getTrades(pair string, tradeCH chan<- Currency, wg *sync.WaitGroup) {
-	slice := []GDAXTrade{}
+func getTrades(pair string, tradeCh chan<- Product, wg *sync.WaitGroup) {
+	defer func() {
+		wg.Done()
+	}()
+
+	slice := []Product{}
 
 	api := "https://api.gdax.com/products/" + pair + "/trades?limit=1"
 	resp, err := http.Get(api)
 	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
+		tradeCh <- Product{ID: pair, Price: "-----", Size: "-----"}
+		return
 	}
 	defer resp.Body.Close()
 	bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
+		tradeCh <- Product{ID: pair, Price: "-----", Size: "-----"}
+		return
 	}
 	err = json.Unmarshal(bytes, &slice)
 	if err != nil {
-		tradeCH <- Currency{Name: pair}
-		wg.Done()
+		tradeCh <- Product{ID: pair, Price: "-----", Size: "-----"}
+		return
 	}
-	tradeCH <- Currency{pair, slice[0]}
-	wg.Done()
+	slice[0].ID = pair
+	tradeCh <- slice[0]
+}
+
+func getStats(pair string, statsCh chan<- Stats, wg *sync.WaitGroup) {
+	defer func() {
+		wg.Done()
+	}()
+
+	stats := Stats{}
+
+	api := "https://api.gdax.com/products/" + pair + "/stats"
+	resp, err := http.Get(api)
+	if err != nil {
+		statsCh <- Stats{ID: pair, Open: "-----", High: "-----", Low: "-----", Volume: "-----"}
+		return
+	}
+	defer resp.Body.Close()
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		statsCh <- Stats{ID: pair, Open: "-----", High: "-----", Low: "-----", Volume: "-----"}
+		return
+	}
+	err = json.Unmarshal(bytes, &stats)
+	if err != nil {
+		statsCh <- Stats{ID: pair, Open: "-----", High: "-----", Low: "-----", Volume: "-----"}
+		return
+	}
+	stats.ID = pair
+	statsCh <- stats
+}
+
+func getTicker(pair string, tickerCh chan<- Ticker, wg *sync.WaitGroup) {
+	defer func() {
+		wg.Done()
+	}()
+
+	ticker := Ticker{}
+
+	api := "https://api.gdax.com/products/" + pair + "/ticker"
+	resp, err := http.Get(api)
+	if err != nil {
+		tickerCh <- Ticker{ID: pair, Bid: "-----", Ask: "-----"}
+		return
+	}
+	defer resp.Body.Close()
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		tickerCh <- Ticker{ID: pair, Bid: "-----", Ask: "-----"}
+		return
+	}
+	err = json.Unmarshal(bytes, &ticker)
+	if err != nil {
+		tickerCh <- Ticker{ID: pair, Bid: "-----", Ask: "-----"}
+		return
+	}
+	ticker.ID = pair
+	tickerCh <- ticker
+}
+
+func getMax(currMax int, testLen int) int {
+	if testLen > currMax {
+		return testLen
+	}
+	return currMax
+}
+
+func setSpc(max int, orig string) string {
+	buf := bytes.Buffer{}
+	buf.WriteString("    ")
+	diff := max - len(orig)
+	if diff > 0 {
+		for i := 0; i < diff; i++ {
+			buf.WriteString(" ")
+		}
+	}
+	buf.WriteString(orig)
+	return buf.String()
+
 }
