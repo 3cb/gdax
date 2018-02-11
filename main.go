@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
 )
 
 func main() {
@@ -21,7 +22,6 @@ func main() {
 		clear()
 		quoteStream(pairs)
 	}
-
 }
 
 // clears terminal for linux, mac, and windows
@@ -44,8 +44,22 @@ func clear() {
 	}
 }
 
+func round(price string) string {
+	num, err := strconv.ParseFloat(price, 64)
+	if err != nil {
+		return "-----"
+	}
+	if num >= 10 {
+		num = float64(int64(num*100+0.5)) / 100
+		return fmt.Sprintf("%.2f", num)
+
+	}
+	num = float64(int64(num*100000+0.5)) / 100000
+	return fmt.Sprintf("%.5f", num)
+}
+
 func print(spaces map[string]string, quotes map[string]GDAXTrade) {
-	println("\nGDAX Price Quotes:")
+	println("\nLive GDAX Quotes:")
 	fmt.Printf("\nBTC/USD:%v%v\n", spaces["BTC-USD"], quotes["BTC-USD"].Price)
 	fmt.Printf("\nBTC/EUR:%v%v\n", spaces["BTC-EUR"], quotes["BTC-EUR"].Price)
 	fmt.Printf("\nBTC/GBP:%v%v\n", spaces["BTC-GBP"], quotes["BTC-GBP"].Price)
