@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
-func quoteSingle(state map[string]Product) {
+func quoteSingle(state map[string]Product, max *MaxLengths) {
 	tradeCh := make(chan Product, 9)
 	statsCh := make(chan Stats, 9)
 	tickerCh := make(chan Ticker, 9)
@@ -21,8 +20,6 @@ func quoteSingle(state map[string]Product) {
 		go getTicker(pair.ID, tickerCh, wg)
 	}
 	wg.Wait()
-
-	max := MaxLengths{}
 
 	// set state from http response data
 	for i := 0; i < 9; i++ {
@@ -67,10 +64,11 @@ func quoteSingle(state map[string]Product) {
 		v.Low = setSpc(max.Low, v.Low)
 		v.Open = setSpc(max.Open, v.Open)
 		v.Volume = setSpc(max.Volume, v.Volume)
-
+		state[k] = v
 	}
 
-	print(state)
+	clearScr()
+	print(state, max)
 }
 
 func getTrades(pair string, tradeCh chan<- Product, wg *sync.WaitGroup) {
@@ -155,25 +153,4 @@ func getTicker(pair string, tickerCh chan<- Ticker, wg *sync.WaitGroup) {
 	}
 	ticker.ID = pair
 	tickerCh <- ticker
-}
-
-func getMax(currMax int, testLen int) int {
-	if testLen > currMax {
-		return testLen
-	}
-	return currMax
-}
-
-func setSpc(max int, orig string) string {
-	buf := bytes.Buffer{}
-	buf.WriteString("    ")
-	diff := max - len(orig)
-	if diff > 0 {
-		for i := 0; i < diff; i++ {
-			buf.WriteString(" ")
-		}
-	}
-	buf.WriteString(orig)
-	return buf.String()
-
 }
