@@ -8,7 +8,6 @@ package main
 // *** GDAX API documentation for websocket ticker channel does not show all available fields as of 2/11/2018
 type Product struct {
 	ID     string `json:"product_id"`
-	Name   string
 	Price  string `json:"price"`      // getTrades/match
 	Size   string `json:"size"`       // getTrades/match
 	Bid    string `json:"best_bid"`   // ticker
@@ -92,4 +91,8 @@ type MaxLengths struct {
 	Low    int
 	Open   int
 	Volume int
+}
+
+func (m *MaxLengths) getTotal() int {
+	return m.Price + m.Size + m.Bid + m.Ask + m.High + m.Low + m.Open + m.Volume
 }
