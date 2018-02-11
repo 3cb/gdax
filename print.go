@@ -47,7 +47,7 @@ func getMax(currMax int, testLen int) int {
 // adds space in front of string based on max length
 func setSpc(max int, orig string) string {
 	buf := bytes.Buffer{}
-	buf.WriteString("     ")
+	buf.WriteString("      ")
 	diff := max - len(orig)
 	if diff > 0 {
 		for i := 0; i < diff; i++ {
