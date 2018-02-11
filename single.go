@@ -19,6 +19,7 @@ func quoteSingle(pairs []string, quotes map[string]GDAXTrade) {
 	maxLength := 0
 	for i := 0; i < 9; i++ {
 		v := <-tradeCH
+		v.Trade.Price = round(v.Trade.Price)
 		quotes[v.Name] = v.Trade
 		if len(v.Trade.Price) > maxLength {
 			maxLength = len(v.Trade.Price)

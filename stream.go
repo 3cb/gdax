@@ -35,7 +35,7 @@ func quoteStream(pairs []string) {
 		if msg.Type == "match" {
 			trade.Time = msg.Time
 			trade.TradeID = msg.TradeID
-			trade.Price = msg.Price
+			trade.Price = round(msg.Price)
 			trade.Size = msg.Size
 			trade.Side = msg.Side
 
