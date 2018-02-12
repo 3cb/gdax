@@ -22,5 +22,6 @@ For streaming quotes through a websocket connection run with the `-s` flag:
 ```
 gdax -s
 ```
+![Diagram](https://github.com/3cb/ssc/blob/master/screenshot.png)
 
 **That's it!**
