@@ -9,17 +9,20 @@ import "github.com/fatih/color"
 // ticker: https://docs.gdax.com/#the-code-classprettyprinttickercode-channel
 // *** GDAX API documentation for websocket ticker channel does not show all available fields as of 2/11/2018
 type Product struct {
-	ID     string       `json:"product_id"`
-	Price  string       `json:"price"` // getTrades/match
-	Delta  string       // % change in price
-	Color  *color.Color // set along with delta to color data on display
-	Size   string       `json:"size"`       // getTrades/match
-	Bid    string       `json:"best_bid"`   // ticker
-	Ask    string       `json:"best_ask"`   // ticker
-	High   string       `json:"high_24h"`   // ticker
-	Low    string       `json:"low_24h"`    // ticker
-	Open   string       `json:"open_24h"`   // ticker
-	Volume string       `json:"volume_24h"` // ticker
+	Type string `json:"type"`
+
+	ID    string       `json:"product_id"`
+	Price string       `json:"price"` // getTrades/match
+	Delta string       // % change in price
+	Color *color.Color // set along with delta to color data on display
+	Size  string       `json:"size"` // getTrades/match
+
+	Bid    string `json:"best_bid"`   // ticker
+	Ask    string `json:"best_ask"`   // ticker
+	High   string `json:"high_24h"`   // ticker
+	Low    string `json:"low_24h"`    // ticker
+	Open   string `json:"open_24h"`   // ticker
+	Volume string `json:"volume_24h"` // ticker
 }
 
 // Stats contains 24 hour data from REST API:
