@@ -60,11 +60,23 @@ func getMax(currMax int, testLen int) int {
 	return currMax
 }
 
-// adds space in front of string based on max length
+// adds space in front of string based on max length for single quote
 func setSpc(max int, orig string) string {
 	buf := bytes.Buffer{}
 	buf.WriteString("     ")
 	diff := max - len(orig)
+	if diff > 0 {
+		for i := 0; i < diff; i++ {
+			buf.WriteString(" ")
+		}
+	}
+	buf.WriteString(orig)
+	return buf.String()
+}
+
+func setSpcStrm(max int, orig string) string {
+	buf := bytes.Buffer{}
+	diff := 5 + max - len(orig)
 	if diff > 0 {
 		for i := 0; i < diff; i++ {
 			buf.WriteString(" ")
@@ -79,10 +91,8 @@ func setHdr(header string, total int) string {
 	buf := bytes.Buffer{}
 	var lMargin, rMargin int
 
-	// line := 8 + 40 + total - len(header)
 	line := total - len(header)
 	lMargin = line / 2
-	// rem := line % 2
 	rMargin = lMargin
 	for i := 0; i < lMargin; i++ {
 		buf.WriteString(" ")
