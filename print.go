@@ -1,3 +1,4 @@
+// Command gdax gets a single quote from http requests to https://api.gdax.com or streams quotes from websocket at wss://ws-feed.gdax.com
 package main
 
 import (
@@ -33,7 +34,7 @@ func clearScr() {
 // prints price quotes to terminal
 func print(state map[string]Product, m *MaxLengths) {
 	c := color.New(color.FgBlack, color.BgWhite)
-	headers := fmt.Sprintf("\n   Price%v%v%v%v%v%v%v%v ", setSpc(m.Price, "Price"), setSpc(m.Size, "Last Size"), setSpc(m.Delta, "Change"), setSpc(m.Bid, "Bid"), setSpc(m.Ask, "Ask"), setSpc(m.High, "High"), setSpc(m.Low, "Low"), setSpc(m.Volume, "Volume"))
+	headers := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", setSpc(m.Price, "Price"), setSpc(m.Size, "Last Size"), setSpc(m.Delta, "Change"), setSpc(m.Bid, "Bid"), setSpc(m.Ask, "Ask"), setSpc(m.High, "High"), setSpc(m.Low, "Low"), setSpc(m.Volume, "Volume"))
 
 	c.Printf("%v", setHdr("GDAX Cryptocurrency Exchange", len(headers)))
 	c.Print(headers)

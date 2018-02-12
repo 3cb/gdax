@@ -1,3 +1,4 @@
+// Command gdax gets a single quote from http requests to https://api.gdax.com or streams quotes from websocket at wss://ws-feed.gdax.com
 package main
 
 import (
