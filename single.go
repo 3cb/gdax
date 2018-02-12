@@ -9,13 +9,13 @@ import (
 )
 
 func quoteSingle(state map[string]Product, max *MaxLengths) {
-	tradeCh := make(chan Product, 9)
-	statsCh := make(chan Stats, 9)
-	tickerCh := make(chan Ticker, 9)
+	tradeCh := make(chan Product, len(state))
+	statsCh := make(chan Stats, len(state))
+	tickerCh := make(chan Ticker, len(state))
 
 	// concurrent http requests
 	wg := &sync.WaitGroup{}
-	wg.Add(27)
+	wg.Add(3 * len(state))
 	for _, pair := range state {
 		go getTrades(pair.ID, tradeCh, wg)
 		go getStats(pair.ID, statsCh, wg)
@@ -24,7 +24,7 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 	wg.Wait()
 
 	// set state from http response data
-	for i := 0; i < 9; i++ {
+	for i := 0; i < len(state); i++ {
 		product := Product{}
 
 		trade := <-tradeCh

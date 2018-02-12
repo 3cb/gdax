@@ -9,9 +9,9 @@ func main() {
 	stream := flag.Bool("s", false, "stream cryptocurrency prices")
 	flag.Parse()
 
-	state := make(map[string]Product, 9)
+	pairs := []string{"BTC-USD", "BTC-EUR", "BTC-GBP", "BCH-USD", "BCH-BTC", "BCH-EUR", "ETH-USD", "ETH-BTC", "ETH-EUR", "LTC-USD", "LTC-BTC", "LTC-EUR"}
 
-	pairs := []string{"BTC-USD", "BTC-EUR", "BTC-GBP", "ETH-USD", "ETH-BTC", "ETH-EUR", "LTC-USD", "LTC-BTC", "LTC-EUR"}
+	state := make(map[string]Product, len(pairs))
 
 	for _, pair := range pairs {
 		state[pair] = Product{ID: pair}
