@@ -1,8 +1,6 @@
 # gdax
 gdax is a command line tool that allows the user to get snapshot or streaming quotes from Coinbase's GDAX exchange
 
-**Note:** This package needs to be updated with new cryptocurrency products recently added to the exchange(bitcoin cash)
-
 ## Installation
 To install gdax run:
 ```
