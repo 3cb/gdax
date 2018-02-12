@@ -12,6 +12,7 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 	statsCh := make(chan Stats, 9)
 	tickerCh := make(chan Ticker, 9)
 
+	// concurrent http requests
 	wg := &sync.WaitGroup{}
 	wg.Add(27)
 	for _, pair := range state {
