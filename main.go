@@ -16,8 +16,10 @@ func main() {
 		state[pair] = Product{ID: pair}
 	}
 
+	// initialize with header lengths
 	max := &MaxLengths{
 		Price:  5,
+		Delta:  6,
 		Size:   9,
 		Bid:    3,
 		Ask:    3,

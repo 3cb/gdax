@@ -54,9 +54,17 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 		state[product.ID] = product
 	}
 
+	// calculate max length of all deltas
+	for k, v := range state {
+		v.Delta, v.Color = setDeltaColor(v.Price, v.Open)
+		max.Delta = getMax(max.Delta, len(v.Delta))
+		state[k] = v
+	}
+
 	// format spacing
 	for k, v := range state {
 		v.Price = setSpc(max.Price, v.Price)
+		v.Delta = setSpc(max.Delta, v.Delta)
 		v.Size = setSpc(max.Size, v.Size)
 		v.Bid = setSpc(max.Bid, v.Bid)
 		v.Ask = setSpc(max.Ask, v.Ask)

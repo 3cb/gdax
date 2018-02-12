@@ -1,5 +1,7 @@
 package main
 
+import "github.com/fatih/color"
+
 // Product maintains up to date price and volume data for a cryptocurrency pair
 // Trailing comments denote which http request or websocket stream the data comes from
 // getTrades: https://docs.gdax.com/#get-trades
@@ -7,15 +9,17 @@ package main
 // ticker: https://docs.gdax.com/#the-code-classprettyprinttickercode-channel
 // *** GDAX API documentation for websocket ticker channel does not show all available fields as of 2/11/2018
 type Product struct {
-	ID     string `json:"product_id"`
-	Price  string `json:"price"`      // getTrades/match
-	Size   string `json:"size"`       // getTrades/match
-	Bid    string `json:"best_bid"`   // ticker
-	Ask    string `json:"best_ask"`   // ticker
-	High   string `json:"high_24h"`   // ticker
-	Low    string `json:"low_24h"`    // ticker
-	Open   string `json:"open_24h"`   // ticker
-	Volume string `json:"volume_24h"` // ticker
+	ID     string       `json:"product_id"`
+	Price  string       `json:"price"` // getTrades/match
+	Delta  string       // % change in price
+	Color  *color.Color // set along with delta to color data on display
+	Size   string       `json:"size"`       // getTrades/match
+	Bid    string       `json:"best_bid"`   // ticker
+	Ask    string       `json:"best_ask"`   // ticker
+	High   string       `json:"high_24h"`   // ticker
+	Low    string       `json:"low_24h"`    // ticker
+	Open   string       `json:"open_24h"`   // ticker
+	Volume string       `json:"volume_24h"` // ticker
 }
 
 // Stats contains 24 hour data from REST API:
@@ -84,6 +88,7 @@ type Match struct {
 // MaxLengths is used to format spaces for printing
 type MaxLengths struct {
 	Price  int
+	Delta  int
 	Size   int
 	Bid    int
 	Ask    int
@@ -91,8 +96,11 @@ type MaxLengths struct {
 	Low    int
 	Open   int
 	Volume int
+
+	// Fixed sets column width during quoteSingle so they don't change width while streaming from websocket
+	Fixed int
 }
 
 func (m *MaxLengths) getTotal() int {
-	return m.Price + m.Size + m.Bid + m.Ask + m.High + m.Low + m.Open + m.Volume
+	return m.Price + m.Delta + m.Size + m.Bid + m.Ask + m.High + m.Low + m.Open + m.Volume
 }
