@@ -3,12 +3,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
-func quoteSingle(state map[string]Product, max *MaxLengths) {
+func quoteSingle(state map[string]Product, max *MaxLengths) string {
 	tradeCh := make(chan Product, len(state))
 	statsCh := make(chan Stats, len(state))
 	tickerCh := make(chan Ticker, len(state))
@@ -29,57 +30,60 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 
 		trade := <-tradeCh
 		product = state[trade.ID]
-		product.Price = rndPrice(trade.Price)
-		max.Price = getMax(max.Price, len(product.Price))
-		product.Size = rndSize(trade.Size)
-		max.Size = getMax(max.Size, len(product.Size))
+		product.Price = RndPrice(trade.Price)
+		max.Price = SetMax(max.Price, len(product.Price))
+		product.Size = RndSize(trade.Size)
+		max.Size = SetMax(max.Size, len(product.Size))
 		state[trade.ID] = product
 
 		stats := <-statsCh
 		product = state[stats.ID]
-		product.Open = rndPrice(stats.Open)
-		max.Open = getMax(max.Open, len(product.Open))
-		product.High = rndPrice(stats.High)
-		max.High = getMax(max.High, len(product.High))
-		product.Low = rndPrice(stats.Low)
-		max.Low = getMax(max.Low, len(product.Low))
-		product.Volume = rndVol(stats.Volume)
-		max.Volume = getMax(max.Volume, len(product.Volume))
+		product.Open = RndPrice(stats.Open)
+		max.Open = SetMax(max.Open, len(product.Open))
+		product.High = RndPrice(stats.High)
+		max.High = SetMax(max.High, len(product.High))
+		product.Low = RndPrice(stats.Low)
+		max.Low = SetMax(max.Low, len(product.Low))
+		product.Volume = RndVol(stats.Volume)
+		max.Volume = SetMax(max.Volume, len(product.Volume))
 		state[product.ID] = product
 
 		ticker := <-tickerCh
 		product = state[ticker.ID]
-		product.Bid = rndPrice(ticker.Bid)
-		max.Bid = getMax(max.Bid, len(product.Bid))
-		product.Ask = rndPrice(ticker.Ask)
-		max.Ask = getMax(max.Ask, len(product.Ask))
+		product.Bid = RndPrice(ticker.Bid)
+		max.Bid = SetMax(max.Bid, len(product.Bid))
+		product.Ask = RndPrice(ticker.Ask)
+		max.Ask = SetMax(max.Ask, len(product.Ask))
 		state[product.ID] = product
 	}
 
 	// calculate max length of all deltas
 	// set spacing on Delta
 	for k, v := range state {
-		v.Delta, v.Color = setDeltaColor(v.Price, v.Open)
-		max.Delta = getMax(max.Delta, len(v.Delta))
+		v.Delta = SetDelta(v.Price, v.Open)
+		v.Color = SetColor(v.Delta)
+		max.Delta = SetMax(max.Delta, len(v.Delta))
 		state[k] = v
 	}
 
 	// format spacing
 	for k, v := range state {
-		v.Price = setSpc(max.Price, v.Price)
-		v.Delta = setSpc(max.Delta, v.Delta)
-		v.Size = setSpc(max.Size, v.Size)
-		v.Bid = setSpc(max.Bid, v.Bid)
-		v.Ask = setSpc(max.Ask, v.Ask)
-		v.High = setSpc(max.High, v.High)
-		v.Low = setSpc(max.Low, v.Low)
-		v.Open = setSpc(max.Open, v.Open)
-		v.Volume = setSpc(max.Volume, v.Volume)
+		v.Price = SetSpc(max.Price, v.Price)
+		v.Delta = SetSpc(max.Delta, v.Delta)
+		v.Size = SetSpc(max.Size, v.Size)
+		v.Bid = SetSpc(max.Bid, v.Bid)
+		v.Ask = SetSpc(max.Ask, v.Ask)
+		v.High = SetSpc(max.High, v.High)
+		v.Low = SetSpc(max.Low, v.Low)
+		v.Open = SetSpc(max.Open, v.Open)
+		v.Volume = SetSpc(max.Volume, v.Volume)
 		state[k] = v
 	}
 
 	clearScr()
-	print(state, max)
+	columnHeaders := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", SetSpc(max.Price, "Price"), SetSpc(max.Size, "Last Size"), SetSpc(max.Delta, "Change"), SetSpc(max.Bid, "Bid"), SetSpc(max.Ask, "Ask"), SetSpc(max.High, "High"), SetSpc(max.Low, "Low"), SetSpc(max.Volume, "Volume"))
+	print(state, columnHeaders)
+	return columnHeaders
 }
 
 func getTrades(pair string, tradeCh chan<- Product, wg *sync.WaitGroup) {

@@ -9,7 +9,7 @@ import (
 )
 
 func quoteStream(state map[string]Product, max *MaxLengths, pairs []string) {
-	quoteSingle(state, max)
+	columnHeaders := quoteSingle(state, max)
 
 	wsSub := &Subscribe{
 		Type:       "subscribe",
@@ -35,25 +35,27 @@ func quoteStream(state map[string]Product, max *MaxLengths, pairs []string) {
 
 		if msg.Type == "match" {
 			product := state[msg.ID]
-			product.Price = setSpcStrm(max.Price, rndPrice(msg.Price))
-			product.Size = setSpcStrm(max.Size, rndSize(msg.Size))
-			product.Delta, product.Color = setDeltaColor(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
-			product.Delta = setSpcStrm(max.Delta, product.Delta)
+			product.Price = SetSpcStrm(max.Price, RndPrice(msg.Price))
+			product.Size = SetSpcStrm(max.Size, RndSize(msg.Size))
+			product.Delta = SetDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Delta)
+			product.Delta = SetSpcStrm(max.Delta, product.Delta)
 			state[msg.ID] = product
 
 		} else if msg.Type == "ticker" {
 			product := state[msg.ID]
-			product.Bid = setSpcStrm(max.Bid, rndPrice(msg.Bid))
-			product.Ask = setSpcStrm(max.Ask, rndPrice(msg.Ask))
-			product.High = setSpcStrm(max.High, rndPrice(msg.High))
-			product.Low = setSpcStrm(max.Low, rndPrice(msg.Low))
-			product.Open = setSpcStrm(max.Open, rndPrice(msg.Open))
-			product.Volume = setSpcStrm(max.Volume, rndVol(msg.Volume))
-			product.Delta, product.Color = setDeltaColor(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
-			product.Delta = setSpcStrm(max.Delta, product.Delta)
+			product.Bid = SetSpcStrm(max.Bid, RndPrice(msg.Bid))
+			product.Ask = SetSpcStrm(max.Ask, RndPrice(msg.Ask))
+			product.High = SetSpcStrm(max.High, RndPrice(msg.High))
+			product.Low = SetSpcStrm(max.Low, RndPrice(msg.Low))
+			product.Open = SetSpcStrm(max.Open, RndPrice(msg.Open))
+			product.Volume = SetSpcStrm(max.Volume, RndVol(msg.Volume))
+			product.Delta = SetDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Delta)
+			product.Delta = SetSpcStrm(max.Delta, product.Delta)
 			state[msg.ID] = product
 		}
 		clearScr()
-		print(state, max)
+		print(state, columnHeaders)
 	}
 }

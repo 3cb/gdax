@@ -5,11 +5,13 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
 )
 
-func rndPrice(price string) string {
+// RndPrice rounds prices to 2 or 5 decimal places
+func RndPrice(price string) string {
 	num, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return "-----"
@@ -23,7 +25,8 @@ func rndPrice(price string) string {
 	return fmt.Sprintf("%.5f", num)
 }
 
-func rndSize(size string) string {
+// RndSize rounds last size data to 8 decimal places
+func RndSize(size string) string {
 	num, err := strconv.ParseFloat(size, 64)
 	if err != nil {
 		return "-----"
@@ -32,7 +35,8 @@ func rndSize(size string) string {
 	return fmt.Sprintf("%.8f", num)
 }
 
-func rndVol(vol string) string {
+// RndVol rounds volume data to the nearest whole number
+func RndVol(vol string) string {
 	num, err := strconv.ParseFloat(vol, 64)
 	if err != nil {
 		return "-----"
@@ -40,20 +44,27 @@ func rndVol(vol string) string {
 	return fmt.Sprint(int64(num + 0.5))
 }
 
-// returns price delta rounded to two decimal places as a string
+// SetDelta returns price delta rounded to two decimal places as a string
 // returns the print color based on the delta
-func setDeltaColor(price string, open string) (string, *color.Color) {
+func SetDelta(price string, open string) string {
 	p, _ := strconv.ParseFloat(price, 64)
 	o, _ := strconv.ParseFloat(open, 64)
 	delta := ((p - o) / o) * 100
+	buf := bytes.Buffer{}
+	buf.WriteString(strconv.FormatFloat(delta, 'f', 2, 64))
+	buf.WriteString("%")
+	return buf.String()
+}
+
+// SetColor uses the delta filed of Product type to set color either red or green
+func SetColor(delta string) *color.Color {
 	c := &color.Color{}
-	if delta > 0 {
+	slice := strings.Split(delta, "%")
+	d, _ := strconv.ParseFloat(slice[0], 64)
+	if d > 0 {
 		c.Add(color.FgGreen, color.Bold)
 	} else {
 		c.Add(color.FgRed, color.Bold)
 	}
-	buf := bytes.Buffer{}
-	buf.WriteString(strconv.FormatFloat(delta, 'f', 2, 64))
-	buf.WriteString("%")
-	return buf.String(), c
+	return c
 }
