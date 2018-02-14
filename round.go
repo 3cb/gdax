@@ -44,7 +44,7 @@ func RndVol(vol string) string {
 	return fmt.Sprint(int64(num + 0.5))
 }
 
-// SetDeltaColor returns price delta rounded to two decimal places as a string
+// SetDelta returns price delta rounded to two decimal places as a string
 // returns the print color based on the delta
 func SetDelta(price string, open string) string {
 	p, _ := strconv.ParseFloat(price, 64)
@@ -56,7 +56,7 @@ func SetDelta(price string, open string) string {
 	return buf.String()
 }
 
-// func SetColor uses the delta filed of Product type to set color either red or green
+// SetColor uses the delta filed of Product type to set color either red or green
 func SetColor(delta string) *color.Color {
 	c := &color.Color{}
 	slice := strings.Split(delta, "%")
