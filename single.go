@@ -76,6 +76,7 @@ func quoteSingle(state map[string]Product, max *MaxLengths, pairs []string) *Fmt
 		v.Low = SetSpc(max.Low, v.Low)
 		v.Open = SetSpc(max.Open, v.Open)
 		v.Volume = SetSpc(max.Volume, v.Volume)
+		v.Row = FmtRow(v)
 		state[k] = v
 	}
 

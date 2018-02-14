@@ -37,24 +37,23 @@ func print(state map[string]Product, format *FmtPrint) {
 
 	c.Print(format.Title)
 	c.Print(format.Headers)
-
-	state["BTC-USD"].Color.Println(FmtRow(state["BTC-USD"]))
-	state["BTC-EUR"].Color.Println(FmtRow(state["BTC-EUR"]))
-	state["BTC-GBP"].Color.Println(FmtRow(state["BTC-GBP"]))
+	state["BTC-USD"].Color.Println(state["BTC-USD"].Row)
+	state["BTC-EUR"].Color.Println(state["BTC-EUR"].Row)
+	state["BTC-GBP"].Color.Println(state["BTC-GBP"].Row)
 	println()
-	state["BCH-USD"].Color.Println(FmtRow(state["BCH-USD"]))
-	state["BCH-BTC"].Color.Println(FmtRow(state["BCH-BTC"]))
-	state["BCH-EUR"].Color.Println(FmtRow(state["BCH-EUR"]))
+	state["BCH-USD"].Color.Println(state["BCH-USD"].Row)
+	state["BCH-BTC"].Color.Println(state["BCH-BTC"].Row)
+	state["BCH-EUR"].Color.Println(state["BCH-EUR"].Row)
 	println()
-	state["ETH-USD"].Color.Println(FmtRow(state["ETH-USD"]))
-	state["ETH-BTC"].Color.Println(FmtRow(state["ETH-BTC"]))
-	state["ETH-EUR"].Color.Println(FmtRow(state["ETH-EUR"]))
+	state["ETH-USD"].Color.Println(state["ETH-USD"].Row)
+	state["ETH-BTC"].Color.Println(state["ETH-BTC"].Row)
+	state["ETH-EUR"].Color.Println(state["ETH-EUR"].Row)
 	println()
-	state["LTC-USD"].Color.Println(FmtRow(state["LTC-USD"]))
-	state["LTC-BTC"].Color.Println(FmtRow(state["LTC-BTC"]))
-	state["LTC-EUR"].Color.Println(FmtRow(state["LTC-EUR"]))
-
+	state["LTC-USD"].Color.Println(state["LTC-USD"].Row)
+	state["LTC-BTC"].Color.Println(state["LTC-BTC"].Row)
+	state["LTC-EUR"].Color.Println(state["LTC-EUR"].Row)
 	c.Println(format.Footer)
+
 }
 
 // FmtColHdr formats column headers and returns a string
