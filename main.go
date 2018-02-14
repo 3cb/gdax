@@ -31,7 +31,7 @@ func main() {
 	}
 
 	if !*stream {
-		quoteSingle(state, max)
+		quoteSingle(state, max, pairs)
 	} else {
 		quoteStream(state, max, pairs)
 	}

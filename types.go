@@ -24,6 +24,8 @@ type Product struct {
 	Low    string `json:"low_24h"`    // ticker
 	Open   string `json:"open_24h"`   // ticker
 	Volume string `json:"volume_24h"` // ticker
+
+	Row string
 }
 
 // Stats contains 24 hour data from REST API:
@@ -63,4 +65,11 @@ type MaxLengths struct {
 	Low    int
 	Open   int
 	Volume int
+}
+
+// FmtPrint contains structure for printing so it only have to be calculated once
+type FmtPrint struct {
+	Title   string
+	Headers string
+	Footer  string
 }

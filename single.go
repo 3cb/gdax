@@ -3,13 +3,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
-func quoteSingle(state map[string]Product, max *MaxLengths) string {
+func quoteSingle(state map[string]Product, max *MaxLengths, pairs []string) *FmtPrint {
 	tradeCh := make(chan Product, len(state))
 	statsCh := make(chan Stats, len(state))
 	tickerCh := make(chan Ticker, len(state))
@@ -77,13 +76,17 @@ func quoteSingle(state map[string]Product, max *MaxLengths) string {
 		v.Low = SetSpc(max.Low, v.Low)
 		v.Open = SetSpc(max.Open, v.Open)
 		v.Volume = SetSpc(max.Volume, v.Volume)
+		v.Row = FmtRow(v)
 		state[k] = v
 	}
 
+	format := &FmtPrint{}
 	clearScr()
-	columnHeaders := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", SetSpc(max.Price, "Price"), SetSpc(max.Size, "Last Size"), SetSpc(max.Delta, "Change"), SetSpc(max.Bid, "Bid"), SetSpc(max.Ask, "Ask"), SetSpc(max.High, "High"), SetSpc(max.Low, "Low"), SetSpc(max.Volume, "Volume"))
-	print(state, columnHeaders)
-	return columnHeaders
+	format.Headers = FmtColHdr(max)
+	format.Title = FmtTitle("GDAX Cryptocurrency Exchange", len(format.Headers))
+	format.Footer = FmtTitle("", len(format.Headers))
+	print(state, format)
+	return format
 }
 
 func getTrades(pair string, tradeCh chan<- Product, wg *sync.WaitGroup) {
