@@ -35,21 +35,23 @@ func quoteStream(state map[string]Product, max *MaxLengths, pairs []string) {
 
 		if msg.Type == "match" {
 			product := state[msg.ID]
-			product.Price = setSpcStrm(max.Price, rndPrice(msg.Price))
-			product.Size = setSpcStrm(max.Size, rndSize(msg.Size))
-			product.Delta, product.Color = setDeltaColor(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Price = setSpcStrm(max.Price, RndPrice(msg.Price))
+			product.Size = setSpcStrm(max.Size, RndSize(msg.Size))
+			product.Delta = SetDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Delta)
 			product.Delta = setSpcStrm(max.Delta, product.Delta)
 			state[msg.ID] = product
 
 		} else if msg.Type == "ticker" {
 			product := state[msg.ID]
-			product.Bid = setSpcStrm(max.Bid, rndPrice(msg.Bid))
-			product.Ask = setSpcStrm(max.Ask, rndPrice(msg.Ask))
-			product.High = setSpcStrm(max.High, rndPrice(msg.High))
-			product.Low = setSpcStrm(max.Low, rndPrice(msg.Low))
-			product.Open = setSpcStrm(max.Open, rndPrice(msg.Open))
-			product.Volume = setSpcStrm(max.Volume, rndVol(msg.Volume))
-			product.Delta, product.Color = setDeltaColor(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Bid = setSpcStrm(max.Bid, RndPrice(msg.Bid))
+			product.Ask = setSpcStrm(max.Ask, RndPrice(msg.Ask))
+			product.High = setSpcStrm(max.High, RndPrice(msg.High))
+			product.Low = setSpcStrm(max.Low, RndPrice(msg.Low))
+			product.Open = setSpcStrm(max.Open, RndPrice(msg.Open))
+			product.Volume = setSpcStrm(max.Volume, RndVol(msg.Volume))
+			product.Delta = SetDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Delta)
 			product.Delta = setSpcStrm(max.Delta, product.Delta)
 			state[msg.ID] = product
 		}

@@ -29,29 +29,29 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 
 		trade := <-tradeCh
 		product = state[trade.ID]
-		product.Price = rndPrice(trade.Price)
+		product.Price = RndPrice(trade.Price)
 		max.Price = getMax(max.Price, len(product.Price))
-		product.Size = rndSize(trade.Size)
+		product.Size = RndSize(trade.Size)
 		max.Size = getMax(max.Size, len(product.Size))
 		state[trade.ID] = product
 
 		stats := <-statsCh
 		product = state[stats.ID]
-		product.Open = rndPrice(stats.Open)
+		product.Open = RndPrice(stats.Open)
 		max.Open = getMax(max.Open, len(product.Open))
-		product.High = rndPrice(stats.High)
+		product.High = RndPrice(stats.High)
 		max.High = getMax(max.High, len(product.High))
-		product.Low = rndPrice(stats.Low)
+		product.Low = RndPrice(stats.Low)
 		max.Low = getMax(max.Low, len(product.Low))
-		product.Volume = rndVol(stats.Volume)
+		product.Volume = RndVol(stats.Volume)
 		max.Volume = getMax(max.Volume, len(product.Volume))
 		state[product.ID] = product
 
 		ticker := <-tickerCh
 		product = state[ticker.ID]
-		product.Bid = rndPrice(ticker.Bid)
+		product.Bid = RndPrice(ticker.Bid)
 		max.Bid = getMax(max.Bid, len(product.Bid))
-		product.Ask = rndPrice(ticker.Ask)
+		product.Ask = RndPrice(ticker.Ask)
 		max.Ask = getMax(max.Ask, len(product.Ask))
 		state[product.ID] = product
 	}
@@ -59,7 +59,8 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 	// calculate max length of all deltas
 	// set spacing on Delta
 	for k, v := range state {
-		v.Delta, v.Color = setDeltaColor(v.Price, v.Open)
+		v.Delta = SetDelta(v.Price, v.Open)
+		v.Color = SetColor(v.Delta)
 		max.Delta = getMax(max.Delta, len(v.Delta))
 		state[k] = v
 	}
