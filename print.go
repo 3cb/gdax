@@ -34,9 +34,9 @@ func clearScr() {
 // prints price quotes to terminal
 func print(state map[string]Product, m *MaxLengths) {
 	c := color.New(color.FgBlack, color.BgWhite)
-	headers := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", setSpc(m.Price, "Price"), setSpc(m.Size, "Last Size"), setSpc(m.Delta, "Change"), setSpc(m.Bid, "Bid"), setSpc(m.Ask, "Ask"), setSpc(m.High, "High"), setSpc(m.Low, "Low"), setSpc(m.Volume, "Volume"))
+	headers := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", SetSpc(m.Price, "Price"), SetSpc(m.Size, "Last Size"), SetSpc(m.Delta, "Change"), SetSpc(m.Bid, "Bid"), SetSpc(m.Ask, "Ask"), SetSpc(m.High, "High"), SetSpc(m.Low, "Low"), SetSpc(m.Volume, "Volume"))
 
-	c.Printf("%v", setHdr("GDAX Cryptocurrency Exchange", len(headers)))
+	c.Printf("%v", SetHdr("GDAX Cryptocurrency Exchange", len(headers)))
 	c.Print(headers)
 
 	state["BTC-USD"].Color.Printf("\n BTC/USD%v%v%v%v%v%v%v%v", state["BTC-USD"].Price, state["BTC-USD"].Size, state["BTC-USD"].Delta, state["BTC-USD"].Bid, state["BTC-USD"].Ask, state["BTC-USD"].High, state["BTC-USD"].Low, state["BTC-USD"].Volume)
@@ -55,20 +55,20 @@ func print(state map[string]Product, m *MaxLengths) {
 	state["LTC-BTC"].Color.Printf("\n LTC/BTC%v%v%v%v%v%v%v%v", state["LTC-BTC"].Price, state["LTC-BTC"].Size, state["LTC-BTC"].Delta, state["LTC-BTC"].Bid, state["LTC-BTC"].Ask, state["LTC-BTC"].High, state["LTC-BTC"].Low, state["LTC-BTC"].Volume)
 	state["LTC-EUR"].Color.Printf("\n LTC/EUR%v%v%v%v%v%v%v%v\n", state["LTC-EUR"].Price, state["LTC-EUR"].Size, state["LTC-EUR"].Delta, state["LTC-EUR"].Bid, state["LTC-EUR"].Ask, state["LTC-EUR"].High, state["LTC-EUR"].Low, state["LTC-EUR"].Volume)
 
-	c.Printf("%v\n", setHdr("", len(headers)))
+	c.Printf("%v\n", SetHdr("", len(headers)))
 
 }
 
-// checks if max length for field needs to be reset
-func getMax(currMax int, testLen int) int {
+// SetMax checks if max length for field needs to be reset
+func SetMax(currMax int, testLen int) int {
 	if testLen > currMax {
 		return testLen
 	}
 	return currMax
 }
 
-// adds space in front of string based on max length for single quote
-func setSpc(max int, orig string) string {
+// SetSpc adds space in front of string based on max length for single quote
+func SetSpc(max int, orig string) string {
 	buf := bytes.Buffer{}
 	buf.WriteString("     ")
 	diff := max - len(orig)
@@ -81,7 +81,8 @@ func setSpc(max int, orig string) string {
 	return buf.String()
 }
 
-func setSpcStrm(max int, orig string) string {
+// SetSpcStrm adds spaces to string according to max lengths calculated in single quote
+func SetSpcStrm(max int, orig string) string {
 	buf := bytes.Buffer{}
 	diff := 5 + max - len(orig)
 	if diff > 0 {
@@ -93,14 +94,14 @@ func setSpcStrm(max int, orig string) string {
 	return buf.String()
 }
 
-// returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
-func setHdr(header string, total int) string {
+// SetHdr returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
+func SetHdr(header string, total int) string {
 	buf := bytes.Buffer{}
 	var lMargin, rMargin int
-
 	line := total - len(header)
+	rem := line % 2
 	lMargin = line / 2
-	rMargin = lMargin
+	rMargin = lMargin + rem
 	for i := 0; i < lMargin; i++ {
 		buf.WriteString(" ")
 	}

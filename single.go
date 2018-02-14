@@ -30,29 +30,29 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 		trade := <-tradeCh
 		product = state[trade.ID]
 		product.Price = RndPrice(trade.Price)
-		max.Price = getMax(max.Price, len(product.Price))
+		max.Price = SetMax(max.Price, len(product.Price))
 		product.Size = RndSize(trade.Size)
-		max.Size = getMax(max.Size, len(product.Size))
+		max.Size = SetMax(max.Size, len(product.Size))
 		state[trade.ID] = product
 
 		stats := <-statsCh
 		product = state[stats.ID]
 		product.Open = RndPrice(stats.Open)
-		max.Open = getMax(max.Open, len(product.Open))
+		max.Open = SetMax(max.Open, len(product.Open))
 		product.High = RndPrice(stats.High)
-		max.High = getMax(max.High, len(product.High))
+		max.High = SetMax(max.High, len(product.High))
 		product.Low = RndPrice(stats.Low)
-		max.Low = getMax(max.Low, len(product.Low))
+		max.Low = SetMax(max.Low, len(product.Low))
 		product.Volume = RndVol(stats.Volume)
-		max.Volume = getMax(max.Volume, len(product.Volume))
+		max.Volume = SetMax(max.Volume, len(product.Volume))
 		state[product.ID] = product
 
 		ticker := <-tickerCh
 		product = state[ticker.ID]
 		product.Bid = RndPrice(ticker.Bid)
-		max.Bid = getMax(max.Bid, len(product.Bid))
+		max.Bid = SetMax(max.Bid, len(product.Bid))
 		product.Ask = RndPrice(ticker.Ask)
-		max.Ask = getMax(max.Ask, len(product.Ask))
+		max.Ask = SetMax(max.Ask, len(product.Ask))
 		state[product.ID] = product
 	}
 
@@ -61,21 +61,21 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 	for k, v := range state {
 		v.Delta = SetDelta(v.Price, v.Open)
 		v.Color = SetColor(v.Delta)
-		max.Delta = getMax(max.Delta, len(v.Delta))
+		max.Delta = SetMax(max.Delta, len(v.Delta))
 		state[k] = v
 	}
 
 	// format spacing
 	for k, v := range state {
-		v.Price = setSpc(max.Price, v.Price)
-		v.Delta = setSpc(max.Delta, v.Delta)
-		v.Size = setSpc(max.Size, v.Size)
-		v.Bid = setSpc(max.Bid, v.Bid)
-		v.Ask = setSpc(max.Ask, v.Ask)
-		v.High = setSpc(max.High, v.High)
-		v.Low = setSpc(max.Low, v.Low)
-		v.Open = setSpc(max.Open, v.Open)
-		v.Volume = setSpc(max.Volume, v.Volume)
+		v.Price = SetSpc(max.Price, v.Price)
+		v.Delta = SetSpc(max.Delta, v.Delta)
+		v.Size = SetSpc(max.Size, v.Size)
+		v.Bid = SetSpc(max.Bid, v.Bid)
+		v.Ask = SetSpc(max.Ask, v.Ask)
+		v.High = SetSpc(max.High, v.High)
+		v.Low = SetSpc(max.Low, v.Low)
+		v.Open = SetSpc(max.Open, v.Open)
+		v.Volume = SetSpc(max.Volume, v.Volume)
 		state[k] = v
 	}
 
