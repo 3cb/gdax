@@ -60,7 +60,7 @@ func TestSetSpcStrm(t *testing.T) {
 	}
 }
 
-func TestSetHdr(t *testing.T) {
+func TestSetTitle(t *testing.T) {
 	tc := []struct {
 		header   string
 		total    int
@@ -73,7 +73,7 @@ func TestSetHdr(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := SetHdr(c.header, c.total)
+		actual := SetTitle(c.header, c.total)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}

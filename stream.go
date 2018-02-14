@@ -9,7 +9,7 @@ import (
 )
 
 func quoteStream(state map[string]Product, max *MaxLengths, pairs []string) {
-	columnHeaders := quoteSingle(state, max)
+	columnHeaders := quoteSingle(state, max, pairs)
 
 	wsSub := &Subscribe{
 		Type:       "subscribe",

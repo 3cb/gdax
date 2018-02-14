@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -31,30 +32,61 @@ func clearScr() {
 }
 
 // prints price quotes to terminal
-func print(state map[string]Product, headers string) {
+func print(state map[string]Product, format *FmtPrint) {
 	c := color.New(color.FgBlack, color.BgWhite)
 
-	c.Printf("%v", SetHdr("GDAX Cryptocurrency Exchange", len(headers)))
-	c.Print(headers)
+	c.Print(format.Title)
+	c.Print(format.Headers)
 
-	state["BTC-USD"].Color.Printf("\n BTC/USD%v%v%v%v%v%v%v%v", state["BTC-USD"].Price, state["BTC-USD"].Size, state["BTC-USD"].Delta, state["BTC-USD"].Bid, state["BTC-USD"].Ask, state["BTC-USD"].High, state["BTC-USD"].Low, state["BTC-USD"].Volume)
-	state["BTC-EUR"].Color.Printf("\n BTC/EUR%v%v%v%v%v%v%v%v", state["BTC-EUR"].Price, state["BTC-EUR"].Size, state["BTC-EUR"].Delta, state["BTC-EUR"].Bid, state["BTC-EUR"].Ask, state["BTC-EUR"].High, state["BTC-EUR"].Low, state["BTC-EUR"].Volume)
-	state["BTC-GBP"].Color.Printf("\n BTC/GBP%v%v%v%v%v%v%v%v\n", state["BTC-GBP"].Price, state["BTC-GBP"].Size, state["BTC-GBP"].Delta, state["BTC-GBP"].Bid, state["BTC-GBP"].Ask, state["BTC-GBP"].High, state["BTC-GBP"].Low, state["BTC-GBP"].Volume)
+	state["BTC-USD"].Color.Println(FmtRow(state["BTC-USD"]))
+	state["BTC-EUR"].Color.Println(FmtRow(state["BTC-EUR"]))
+	state["BTC-GBP"].Color.Println(FmtRow(state["BTC-GBP"]))
+	println()
+	state["BCH-USD"].Color.Println(FmtRow(state["BCH-USD"]))
+	state["BCH-BTC"].Color.Println(FmtRow(state["BCH-BTC"]))
+	state["BCH-EUR"].Color.Println(FmtRow(state["BCH-EUR"]))
+	println()
+	state["ETH-USD"].Color.Println(FmtRow(state["ETH-USD"]))
+	state["ETH-BTC"].Color.Println(FmtRow(state["ETH-BTC"]))
+	state["ETH-EUR"].Color.Println(FmtRow(state["ETH-EUR"]))
+	println()
+	state["LTC-USD"].Color.Println(FmtRow(state["LTC-USD"]))
+	state["LTC-BTC"].Color.Println(FmtRow(state["LTC-BTC"]))
+	state["LTC-EUR"].Color.Println(FmtRow(state["LTC-EUR"]))
 
-	state["BCH-USD"].Color.Printf("\n BCH/USD%v%v%v%v%v%v%v%v", state["BCH-USD"].Price, state["BCH-USD"].Size, state["BCH-USD"].Delta, state["BCH-USD"].Bid, state["BCH-USD"].Ask, state["BCH-USD"].High, state["BCH-USD"].Low, state["BCH-USD"].Volume)
-	state["BCH-BTC"].Color.Printf("\n BCH/BTC%v%v%v%v%v%v%v%v", state["BCH-BTC"].Price, state["BCH-BTC"].Size, state["BCH-BTC"].Delta, state["BCH-BTC"].Bid, state["BCH-BTC"].Ask, state["BCH-BTC"].High, state["BCH-BTC"].Low, state["BCH-BTC"].Volume)
-	state["BCH-EUR"].Color.Printf("\n BCH/EUR%v%v%v%v%v%v%v%v\n", state["BCH-EUR"].Price, state["BCH-EUR"].Size, state["BCH-EUR"].Delta, state["BCH-EUR"].Bid, state["BCH-EUR"].Ask, state["BCH-EUR"].High, state["BCH-EUR"].Low, state["BCH-EUR"].Volume)
+	c.Println(format.Footer)
+}
 
-	state["ETH-USD"].Color.Printf("\n ETH/USD%v%v%v%v%v%v%v%v", state["ETH-USD"].Price, state["ETH-USD"].Size, state["ETH-USD"].Delta, state["ETH-USD"].Bid, state["ETH-USD"].Ask, state["ETH-USD"].High, state["ETH-USD"].Low, state["ETH-USD"].Volume)
-	state["ETH-BTC"].Color.Printf("\n ETH/BTC%v%v%v%v%v%v%v%v", state["ETH-BTC"].Price, state["ETH-BTC"].Size, state["ETH-BTC"].Delta, state["ETH-BTC"].Bid, state["ETH-BTC"].Ask, state["ETH-BTC"].High, state["ETH-BTC"].Low, state["ETH-BTC"].Volume)
-	state["ETH-EUR"].Color.Printf("\n ETH/EUR%v%v%v%v%v%v%v%v\n", state["ETH-EUR"].Price, state["ETH-EUR"].Size, state["ETH-EUR"].Delta, state["ETH-EUR"].Bid, state["ETH-EUR"].Ask, state["ETH-EUR"].High, state["ETH-EUR"].Low, state["ETH-EUR"].Volume)
+// FmtColHdr formats column headers and returns a string
+func FmtColHdr(max *MaxLengths) string {
+	buf := bytes.Buffer{}
+	buf.WriteString("\n Product")
+	buf.WriteString(SetSpc(max.Price, "Price"))
+	buf.WriteString(SetSpc(max.Size, "Last Size"))
+	buf.WriteString(SetSpc(max.Delta, "Change"))
+	buf.WriteString(SetSpc(max.Bid, "Bid"))
+	buf.WriteString(SetSpc(max.Ask, "Ask"))
+	buf.WriteString(SetSpc(max.High, "High"))
+	buf.WriteString(SetSpc(max.Low, "Low"))
+	buf.WriteString(SetSpc(max.Volume, "Volume"))
+	buf.WriteString(" ")
+	return buf.String()
+}
 
-	state["LTC-USD"].Color.Printf("\n LTC/USD%v%v%v%v%v%v%v%v", state["LTC-USD"].Price, state["LTC-USD"].Size, state["LTC-USD"].Delta, state["LTC-USD"].Bid, state["LTC-USD"].Ask, state["LTC-USD"].High, state["LTC-USD"].Low, state["LTC-USD"].Volume)
-	state["LTC-BTC"].Color.Printf("\n LTC/BTC%v%v%v%v%v%v%v%v", state["LTC-BTC"].Price, state["LTC-BTC"].Size, state["LTC-BTC"].Delta, state["LTC-BTC"].Bid, state["LTC-BTC"].Ask, state["LTC-BTC"].High, state["LTC-BTC"].Low, state["LTC-BTC"].Volume)
-	state["LTC-EUR"].Color.Printf("\n LTC/EUR%v%v%v%v%v%v%v%v\n", state["LTC-EUR"].Price, state["LTC-EUR"].Size, state["LTC-EUR"].Delta, state["LTC-EUR"].Bid, state["LTC-EUR"].Ask, state["LTC-EUR"].High, state["LTC-EUR"].Low, state["LTC-EUR"].Volume)
-
-	c.Printf("%v\n", SetHdr("", len(headers)))
-
+// FmtRow formats all Product data into a single row so it can be printed
+func FmtRow(pair Product) string {
+	buf := bytes.Buffer{}
+	buf.WriteString("\n ")
+	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
+	buf.WriteString(pair.Price)
+	buf.WriteString(pair.Size)
+	buf.WriteString(pair.Delta)
+	buf.WriteString(pair.Bid)
+	buf.WriteString(pair.Ask)
+	buf.WriteString(pair.High)
+	buf.WriteString(pair.Low)
+	buf.WriteString(pair.Volume)
+	return buf.String()
 }
 
 // SetMax checks if max length for field needs to be reset
@@ -92,18 +124,24 @@ func SetSpcStrm(max int, orig string) string {
 	return buf.String()
 }
 
-// SetHdr returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
-func SetHdr(header string, total int) string {
+// FmtTitle returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
+func FmtTitle(title string, total int) string {
 	buf := bytes.Buffer{}
 	var lMargin, rMargin int
-	line := total - len(header)
-	rem := line % 2
-	lMargin = line / 2
-	rMargin = lMargin + rem
+	whitespace := total - len(title)
+
+	if whitespace%2 == 0 {
+		lMargin = whitespace / 2
+		rMargin = lMargin
+	} else {
+		lMargin = (whitespace - 1) / 2
+		rMargin = lMargin + 1
+	}
+
 	for i := 0; i < lMargin; i++ {
 		buf.WriteString(" ")
 	}
-	buf.WriteString(header)
+	buf.WriteString(title)
 	for i := 0; i < rMargin; i++ {
 		buf.WriteString(" ")
 	}
