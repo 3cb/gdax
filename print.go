@@ -3,7 +3,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -32,9 +31,8 @@ func clearScr() {
 }
 
 // prints price quotes to terminal
-func print(state map[string]Product, m *MaxLengths) {
+func print(state map[string]Product, headers string) {
 	c := color.New(color.FgBlack, color.BgWhite)
-	headers := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", SetSpc(m.Price, "Price"), SetSpc(m.Size, "Last Size"), SetSpc(m.Delta, "Change"), SetSpc(m.Bid, "Bid"), SetSpc(m.Ask, "Ask"), SetSpc(m.High, "High"), SetSpc(m.Low, "Low"), SetSpc(m.Volume, "Volume"))
 
 	c.Printf("%v", SetHdr("GDAX Cryptocurrency Exchange", len(headers)))
 	c.Print(headers)

@@ -3,12 +3,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"sync"
 )
 
-func quoteSingle(state map[string]Product, max *MaxLengths) {
+func quoteSingle(state map[string]Product, max *MaxLengths) string {
 	tradeCh := make(chan Product, len(state))
 	statsCh := make(chan Stats, len(state))
 	tickerCh := make(chan Ticker, len(state))
@@ -80,7 +81,9 @@ func quoteSingle(state map[string]Product, max *MaxLengths) {
 	}
 
 	clearScr()
-	print(state, max)
+	columnHeaders := fmt.Sprintf("\n Product%v%v%v%v%v%v%v%v ", SetSpc(max.Price, "Price"), SetSpc(max.Size, "Last Size"), SetSpc(max.Delta, "Change"), SetSpc(max.Bid, "Bid"), SetSpc(max.Ask, "Ask"), SetSpc(max.High, "High"), SetSpc(max.Low, "Low"), SetSpc(max.Volume, "Volume"))
+	print(state, columnHeaders)
+	return columnHeaders
 }
 
 func getTrades(pair string, tradeCh chan<- Product, wg *sync.WaitGroup) {
