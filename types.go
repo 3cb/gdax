@@ -67,7 +67,7 @@ type MaxLengths struct {
 	Volume int
 }
 
-// FmtPrint contains structure for printing so it only have to be calculated once
+// FmtPrint contains structure for printing so it only has to be calculated once
 type FmtPrint struct {
 	Title   string
 	Headers string
