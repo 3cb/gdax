@@ -42,13 +42,13 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 		max.Volume = setMax(max.Volume, len(product.Volume))
 		max.Bid = setMax(max.Bid, len(product.Bid))
 		max.Ask = setMax(max.Ask, len(product.Ask))
-		max.Delta = setMax(max.Delta, len(product.Delta))
+		max.Change = setMax(max.Change, len(product.Change))
 	}
 
 	// format spacing
 	for k, v := range state {
 		v.Price = setSpc(max.Price, v.Price)
-		v.Delta = setSpc(max.Delta, v.Delta)
+		v.Change = setSpc(max.Change, v.Change)
 		v.Size = setSpc(max.Size, v.Size)
 		v.Bid = setSpc(max.Bid, v.Bid)
 		v.Ask = setSpc(max.Ask, v.Ask)
@@ -74,8 +74,8 @@ func processTradeCh(state map[string]Product, trade *Product) Product {
 	product.Price = rndPrice(trade.Price)
 	product.Size = rndSize(trade.Size)
 	if len(product.Open) > 0 {
-		product.Delta = setDelta(product.Price, product.Open)
-		product.Color = SetColor(product.Delta)
+		product.Change = setDelta(product.Price, product.Open)
+		product.Color = SetColor(product.Change)
 	}
 	return product
 }
@@ -87,8 +87,8 @@ func processStatsCh(state map[string]Product, stats *Stats) Product {
 	product.Low = rndPrice(stats.Low)
 	product.Volume = rndVol(stats.Volume)
 	if len(product.Price) > 0 {
-		product.Delta = setDelta(product.Price, product.Open)
-		product.Color = SetColor(product.Delta)
+		product.Change = setDelta(product.Price, product.Open)
+		product.Color = SetColor(product.Change)
 	}
 	return product
 }

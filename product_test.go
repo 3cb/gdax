@@ -4,25 +4,6 @@ import (
 	"testing"
 )
 
-func Test_setMax(t *testing.T) {
-	tc := []struct {
-		current  int
-		testLen  int
-		expected int
-	}{
-		{10, 8, 10},
-		{8, 10, 10},
-		{10, 20, 20},
-	}
-
-	for _, c := range tc {
-		actual := setMax(c.current, c.testLen)
-		if actual != c.expected {
-			t.Errorf("expected %v; got %v", c.expected, actual)
-		}
-	}
-}
-
 func Test_setSpc(t *testing.T) {
 	tc := []struct {
 		max      int
@@ -60,22 +41,32 @@ func Test_setSpcStrm(t *testing.T) {
 	}
 }
 
-func Test_fmtTitle(t *testing.T) {
+func Test_fmtRow(t *testing.T) {
+	product := Product{
+		ID:     "BTC-USD",
+		Price:  "       8888.13",
+		Size:   "     0.12345678",
+		Change: "         1.02%",
+		Bid:    "         8888.13",
+		Ask:    "         8888.16",
+		High:   "         9000.20",
+		Low:    "         8888.13",
+		Volume: "         5000",
+	}
 	tc := []struct {
-		header   string
-		total    int
+		pair     Product
 		expected string
 	}{
-		{"four", 24, "          four          "},
-		{"four", 23, "         four          "},
-		{"one", 24, "          one           "},
-		{"one", 23, "          one          "},
+		{
+			pair:     product,
+			expected: "\n BTC/USD       8888.13     0.12345678         1.02%         8888.13         8888.16         9000.20         8888.13         5000",
+		},
 	}
 
 	for _, c := range tc {
-		actual := fmtTitle(c.header, c.total)
-		if actual != c.expected {
-			t.Errorf("expected %v; got %v", c.expected, actual)
+		got := fmtRow(c.pair)
+		if got != c.expected {
+			t.Errorf("expected %v; got %v", c.expected, got)
 		}
 	}
 }

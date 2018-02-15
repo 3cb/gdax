@@ -1,7 +1,12 @@
 // Command gdax gets a single quote from http requests to https://api.gdax.com or streams quotes from websocket at wss://ws-feed.gdax.com
 package main
 
-import "github.com/fatih/color"
+import (
+	"bytes"
+	"strings"
+
+	"github.com/fatih/color"
+)
 
 // Product maintains up to date price and volume data for a cryptocurrency pair
 // Trailing comments denote which http request or websocket stream the data comes from
@@ -24,8 +29,8 @@ type Product struct {
 	Bid string `json:"best_bid"` // getTicker/ticker
 	Ask string `json:"best_ask"` // getTicker/ticker
 
-	Delta string       // % change in price
-	Color *color.Color // set along with delta to color data on display
+	Change string       // % change in price
+	Color  *color.Color // set along with delta to color data on display
 
 	Row string
 }
@@ -48,30 +53,45 @@ type Ticker struct {
 	Ask string `json:"ask"`
 }
 
-// Subscribe is the structure for the subscription message sent to GDAX websocket API
-// https://docs.gdax.com/#subscribe
-type Subscribe struct {
-	Type       string   `json:"type"`
-	ProductIds []string `json:"product_ids"`
-	Channels   []string `json:"channels"`
+// setSpc adds space in front of string based on max length for single quote
+func setSpc(max int, orig string) string {
+	buf := bytes.Buffer{}
+	buf.WriteString("     ")
+	diff := max - len(orig)
+	if diff > 0 {
+		for i := 0; i < diff; i++ {
+			buf.WriteString(" ")
+		}
+	}
+	buf.WriteString(orig)
+	return buf.String()
 }
 
-// MaxLengths is used to format spaces for printing
-type MaxLengths struct {
-	Price  int
-	Delta  int
-	Size   int
-	Bid    int
-	Ask    int
-	High   int
-	Low    int
-	Open   int
-	Volume int
+// setSpcStrm adds spaces to string according to max lengths calculated in single quote
+func setSpcStrm(max int, orig string) string {
+	buf := bytes.Buffer{}
+	diff := 5 + max - len(orig)
+	if diff > 0 {
+		for i := 0; i < diff; i++ {
+			buf.WriteString(" ")
+		}
+	}
+	buf.WriteString(orig)
+	return buf.String()
 }
 
-// FmtPrint contains structure for printing so it only has to be calculated once
-type FmtPrint struct {
-	Title   string
-	Headers string
-	Footer  string
+// fmtRow formats all Product data into a single row so it can be printed
+func fmtRow(pair Product) string {
+	buf := bytes.Buffer{}
+	buf.WriteString("\n ")
+	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
+	buf.WriteString(pair.Price)
+	buf.WriteString(pair.Size)
+	buf.WriteString(pair.Change)
+	buf.WriteString(pair.Bid)
+	buf.WriteString(pair.Ask)
+	buf.WriteString(pair.High)
+	buf.WriteString(pair.Low)
+	buf.WriteString(pair.Volume)
+	return buf.String()
 }

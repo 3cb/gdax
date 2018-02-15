@@ -8,6 +8,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Subscribe is the structure for the subscription message sent to GDAX websocket API
+// https://docs.gdax.com/#subscribe
+type Subscribe struct {
+	Type       string   `json:"type"`
+	ProductIds []string `json:"product_ids"`
+	Channels   []string `json:"channels"`
+}
+
 func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 	format := quoteSingle(state, pairs, max)
 
@@ -37,9 +45,9 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 			product := state[msg.ID]
 			product.Price = setSpcStrm(max.Price, rndPrice(msg.Price))
 			product.Size = setSpcStrm(max.Size, rndSize(msg.Size))
-			product.Delta = setDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
-			product.Color = SetColor(product.Delta)
-			product.Delta = setSpcStrm(max.Delta, product.Delta)
+			product.Change = setDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Change)
+			product.Change = setSpcStrm(max.Change, product.Change)
 			state[msg.ID] = product
 
 		} else if msg.Type == "ticker" {
@@ -50,9 +58,9 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 			product.Low = setSpcStrm(max.Low, rndPrice(msg.Low))
 			product.Open = setSpcStrm(max.Open, rndPrice(msg.Open))
 			product.Volume = setSpcStrm(max.Volume, rndVol(msg.Volume))
-			product.Delta = setDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
-			product.Color = SetColor(product.Delta)
-			product.Delta = setSpcStrm(max.Delta, product.Delta)
+			product.Change = setDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
+			product.Color = SetColor(product.Change)
+			product.Change = setSpcStrm(max.Change, product.Change)
 			state[msg.ID] = product
 		}
 		for k, v := range state {
