@@ -23,22 +23,26 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 	// set state from http response data
 	for i := 0; i < len(state); i++ {
 		trade := <-tradeCh
-		state[trade.ID] = processTradeCh(state, max, &trade)
+		state[trade.ID] = processTradeCh(state, &trade)
 
 		stats := <-statsCh
-		state[stats.ID] = processStatsCh(state, max, &stats)
+		state[stats.ID] = processStatsCh(state, &stats)
 
 		ticker := <-tickerCh
-		state[ticker.ID] = processTickerCh(state, max, &ticker)
+		state[ticker.ID] = processTickerCh(state, &ticker)
 	}
 
-	// calculate max length of all deltas
-	// set spacing on Delta
-	for k, v := range state {
-		v.Delta = SetDelta(v.Price, v.Open)
-		v.Color = SetColor(v.Delta)
-		max.Delta = SetMax(max.Delta, len(v.Delta))
-		state[k] = v
+	// calculate max lengths
+	for _, product := range state {
+		max.Price = SetMax(max.Price, len(product.Price))
+		max.Size = SetMax(max.Size, len(product.Size))
+		max.Open = SetMax(max.Open, len(product.Open))
+		max.High = SetMax(max.High, len(product.High))
+		max.Low = SetMax(max.Low, len(product.Low))
+		max.Volume = SetMax(max.Volume, len(product.Volume))
+		max.Bid = SetMax(max.Bid, len(product.Bid))
+		max.Ask = SetMax(max.Ask, len(product.Ask))
+		max.Delta = SetMax(max.Delta, len(product.Delta))
 	}
 
 	// format spacing
@@ -65,33 +69,34 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 	return format
 }
 
-func processTradeCh(state map[string]Product, max *MaxLengths, trade *Product) Product {
+func processTradeCh(state map[string]Product, trade *Product) Product {
 	product := state[trade.ID]
 	product.Price = RndPrice(trade.Price)
-	max.Price = SetMax(max.Price, len(product.Price))
 	product.Size = RndSize(trade.Size)
-	max.Size = SetMax(max.Size, len(product.Size))
+	if len(product.Open) > 0 {
+		product.Delta = SetDelta(product.Price, product.Open)
+		product.Color = SetColor(product.Delta)
+
+	}
 	return product
 }
 
-func processStatsCh(state map[string]Product, max *MaxLengths, stats *Stats) Product {
+func processStatsCh(state map[string]Product, stats *Stats) Product {
 	product := state[stats.ID]
 	product.Open = RndPrice(stats.Open)
-	max.Open = SetMax(max.Open, len(product.Open))
 	product.High = RndPrice(stats.High)
-	max.High = SetMax(max.High, len(product.High))
 	product.Low = RndPrice(stats.Low)
-	max.Low = SetMax(max.Low, len(product.Low))
 	product.Volume = RndVol(stats.Volume)
-	max.Volume = SetMax(max.Volume, len(product.Volume))
+	if len(product.Price) > 0 {
+		product.Delta = SetDelta(product.Price, product.Open)
+		product.Color = SetColor(product.Delta)
+	}
 	return product
 }
 
-func processTickerCh(state map[string]Product, max *MaxLengths, ticker *Ticker) Product {
+func processTickerCh(state map[string]Product, ticker *Ticker) Product {
 	product := state[ticker.ID]
 	product.Bid = RndPrice(ticker.Bid)
-	max.Bid = SetMax(max.Bid, len(product.Bid))
 	product.Ask = RndPrice(ticker.Ask)
-	max.Ask = SetMax(max.Ask, len(product.Ask))
 	return product
 }
