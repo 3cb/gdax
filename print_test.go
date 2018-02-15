@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSetMax(t *testing.T) {
+func Test_setMax(t *testing.T) {
 	tc := []struct {
 		current  int
 		testLen  int
@@ -16,14 +16,14 @@ func TestSetMax(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := SetMax(c.current, c.testLen)
+		actual := setMax(c.current, c.testLen)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestSetSpc(t *testing.T) {
+func Test_setSpc(t *testing.T) {
 	tc := []struct {
 		max      int
 		original string
@@ -35,14 +35,14 @@ func TestSetSpc(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := SetSpc(c.max, c.original)
+		actual := setSpc(c.max, c.original)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestSetSpcStrm(t *testing.T) {
+func Test_setSpcStrm(t *testing.T) {
 	tc := []struct {
 		max      int
 		original string
@@ -53,14 +53,14 @@ func TestSetSpcStrm(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := SetSpcStrm(c.max, c.original)
+		actual := setSpcStrm(c.max, c.original)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestFmtTitle(t *testing.T) {
+func Test_fmtTitle(t *testing.T) {
 	tc := []struct {
 		header   string
 		total    int
@@ -73,7 +73,7 @@ func TestFmtTitle(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := FmtTitle(c.header, c.total)
+		actual := fmtTitle(c.header, c.total)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestRndPrice(t *testing.T) {
+func Test_rndPrice(t *testing.T) {
 	tc := []struct {
 		input    string
 		expected string
@@ -17,14 +17,14 @@ func TestRndPrice(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := RndPrice(c.input)
+		actual := rndPrice(c.input)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestRndSize(t *testing.T) {
+func Test_rndSize(t *testing.T) {
 	tc := []struct {
 		input    string
 		expected string
@@ -36,14 +36,14 @@ func TestRndSize(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := RndSize(c.input)
+		actual := rndSize(c.input)
 		if actual != c.expected {
 			t.Errorf("expected %v;got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestRndVol(t *testing.T) {
+func Test_rndVol(t *testing.T) {
 	tc := []struct {
 		input    string
 		expected string
@@ -54,14 +54,14 @@ func TestRndVol(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := RndVol(c.input)
+		actual := rndVol(c.input)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}
 	}
 }
 
-func TestSetDelta(t *testing.T) {
+func Test_setDelta(t *testing.T) {
 	tc := []struct {
 		price    string
 		open     string
@@ -73,7 +73,7 @@ func TestSetDelta(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		actual := SetDelta(c.price, c.open)
+		actual := setDelta(c.price, c.open)
 		if actual != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, actual)
 		}

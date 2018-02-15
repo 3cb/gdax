@@ -56,24 +56,24 @@ func print(state map[string]Product, format *FmtPrint) {
 
 }
 
-// FmtColHdr formats column headers and returns a string
-func FmtColHdr(max *MaxLengths) string {
+// fmtColHdr formats column headers and returns a string
+func fmtColHdr(max *MaxLengths) string {
 	buf := bytes.Buffer{}
 	buf.WriteString("\n Product")
-	buf.WriteString(SetSpc(max.Price, "Price"))
-	buf.WriteString(SetSpc(max.Size, "Last Size"))
-	buf.WriteString(SetSpc(max.Delta, "Change"))
-	buf.WriteString(SetSpc(max.Bid, "Bid"))
-	buf.WriteString(SetSpc(max.Ask, "Ask"))
-	buf.WriteString(SetSpc(max.High, "High"))
-	buf.WriteString(SetSpc(max.Low, "Low"))
-	buf.WriteString(SetSpc(max.Volume, "Volume"))
+	buf.WriteString(setSpc(max.Price, "Price"))
+	buf.WriteString(setSpc(max.Size, "Last Size"))
+	buf.WriteString(setSpc(max.Delta, "Change"))
+	buf.WriteString(setSpc(max.Bid, "Bid"))
+	buf.WriteString(setSpc(max.Ask, "Ask"))
+	buf.WriteString(setSpc(max.High, "High"))
+	buf.WriteString(setSpc(max.Low, "Low"))
+	buf.WriteString(setSpc(max.Volume, "Volume"))
 	buf.WriteString(" ")
 	return buf.String()
 }
 
-// FmtRow formats all Product data into a single row so it can be printed
-func FmtRow(pair Product) string {
+// fmtRow formats all Product data into a single row so it can be printed
+func fmtRow(pair Product) string {
 	buf := bytes.Buffer{}
 	buf.WriteString("\n ")
 	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
@@ -88,16 +88,16 @@ func FmtRow(pair Product) string {
 	return buf.String()
 }
 
-// SetMax checks if max length for field needs to be reset
-func SetMax(currMax int, testLen int) int {
+// setMax checks if max length for field needs to be reset
+func setMax(currMax int, testLen int) int {
 	if testLen > currMax {
 		return testLen
 	}
 	return currMax
 }
 
-// SetSpc adds space in front of string based on max length for single quote
-func SetSpc(max int, orig string) string {
+// setSpc adds space in front of string based on max length for single quote
+func setSpc(max int, orig string) string {
 	buf := bytes.Buffer{}
 	buf.WriteString("     ")
 	diff := max - len(orig)
@@ -110,8 +110,8 @@ func SetSpc(max int, orig string) string {
 	return buf.String()
 }
 
-// SetSpcStrm adds spaces to string according to max lengths calculated in single quote
-func SetSpcStrm(max int, orig string) string {
+// setSpcStrm adds spaces to string according to max lengths calculated in single quote
+func setSpcStrm(max int, orig string) string {
 	buf := bytes.Buffer{}
 	diff := 5 + max - len(orig)
 	if diff > 0 {
@@ -123,8 +123,8 @@ func SetSpcStrm(max int, orig string) string {
 	return buf.String()
 }
 
-// FmtTitle returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
-func FmtTitle(title string, total int) string {
+// fmtTitle returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
+func fmtTitle(title string, total int) string {
 	buf := bytes.Buffer{}
 	var lMargin, rMargin int
 	whitespace := total - len(title)

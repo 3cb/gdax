@@ -34,36 +34,36 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 
 	// calculate max lengths
 	for _, product := range state {
-		max.Price = SetMax(max.Price, len(product.Price))
-		max.Size = SetMax(max.Size, len(product.Size))
-		max.Open = SetMax(max.Open, len(product.Open))
-		max.High = SetMax(max.High, len(product.High))
-		max.Low = SetMax(max.Low, len(product.Low))
-		max.Volume = SetMax(max.Volume, len(product.Volume))
-		max.Bid = SetMax(max.Bid, len(product.Bid))
-		max.Ask = SetMax(max.Ask, len(product.Ask))
-		max.Delta = SetMax(max.Delta, len(product.Delta))
+		max.Price = setMax(max.Price, len(product.Price))
+		max.Size = setMax(max.Size, len(product.Size))
+		max.Open = setMax(max.Open, len(product.Open))
+		max.High = setMax(max.High, len(product.High))
+		max.Low = setMax(max.Low, len(product.Low))
+		max.Volume = setMax(max.Volume, len(product.Volume))
+		max.Bid = setMax(max.Bid, len(product.Bid))
+		max.Ask = setMax(max.Ask, len(product.Ask))
+		max.Delta = setMax(max.Delta, len(product.Delta))
 	}
 
 	// format spacing
 	for k, v := range state {
-		v.Price = SetSpc(max.Price, v.Price)
-		v.Delta = SetSpc(max.Delta, v.Delta)
-		v.Size = SetSpc(max.Size, v.Size)
-		v.Bid = SetSpc(max.Bid, v.Bid)
-		v.Ask = SetSpc(max.Ask, v.Ask)
-		v.High = SetSpc(max.High, v.High)
-		v.Low = SetSpc(max.Low, v.Low)
-		v.Open = SetSpc(max.Open, v.Open)
-		v.Volume = SetSpc(max.Volume, v.Volume)
-		v.Row = FmtRow(v)
+		v.Price = setSpc(max.Price, v.Price)
+		v.Delta = setSpc(max.Delta, v.Delta)
+		v.Size = setSpc(max.Size, v.Size)
+		v.Bid = setSpc(max.Bid, v.Bid)
+		v.Ask = setSpc(max.Ask, v.Ask)
+		v.High = setSpc(max.High, v.High)
+		v.Low = setSpc(max.Low, v.Low)
+		v.Open = setSpc(max.Open, v.Open)
+		v.Volume = setSpc(max.Volume, v.Volume)
+		v.Row = fmtRow(v)
 		state[k] = v
 	}
 
 	format := &FmtPrint{}
-	format.Headers = FmtColHdr(max)
-	format.Title = FmtTitle("GDAX Cryptocurrency Exchange", len(format.Headers))
-	format.Footer = FmtTitle("", len(format.Headers))
+	format.Headers = fmtColHdr(max)
+	format.Title = fmtTitle("GDAX Cryptocurrency Exchange", len(format.Headers))
+	format.Footer = fmtTitle("", len(format.Headers))
 	clearScr()
 	print(state, format)
 	return format
@@ -71,24 +71,23 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 
 func processTradeCh(state map[string]Product, trade *Product) Product {
 	product := state[trade.ID]
-	product.Price = RndPrice(trade.Price)
-	product.Size = RndSize(trade.Size)
+	product.Price = rndPrice(trade.Price)
+	product.Size = rndSize(trade.Size)
 	if len(product.Open) > 0 {
-		product.Delta = SetDelta(product.Price, product.Open)
+		product.Delta = setDelta(product.Price, product.Open)
 		product.Color = SetColor(product.Delta)
-
 	}
 	return product
 }
 
 func processStatsCh(state map[string]Product, stats *Stats) Product {
 	product := state[stats.ID]
-	product.Open = RndPrice(stats.Open)
-	product.High = RndPrice(stats.High)
-	product.Low = RndPrice(stats.Low)
-	product.Volume = RndVol(stats.Volume)
+	product.Open = rndPrice(stats.Open)
+	product.High = rndPrice(stats.High)
+	product.Low = rndPrice(stats.Low)
+	product.Volume = rndVol(stats.Volume)
 	if len(product.Price) > 0 {
-		product.Delta = SetDelta(product.Price, product.Open)
+		product.Delta = setDelta(product.Price, product.Open)
 		product.Color = SetColor(product.Delta)
 	}
 	return product
@@ -96,7 +95,7 @@ func processStatsCh(state map[string]Product, stats *Stats) Product {
 
 func processTickerCh(state map[string]Product, ticker *Ticker) Product {
 	product := state[ticker.ID]
-	product.Bid = RndPrice(ticker.Bid)
-	product.Ask = RndPrice(ticker.Ask)
+	product.Bid = rndPrice(ticker.Bid)
+	product.Ask = rndPrice(ticker.Ask)
 	return product
 }

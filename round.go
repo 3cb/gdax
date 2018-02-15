@@ -10,8 +10,8 @@ import (
 	"github.com/fatih/color"
 )
 
-// RndPrice rounds prices to 2 or 5 decimal places
-func RndPrice(price string) string {
+// rndPrice rounds prices to 2 or 5 decimal places
+func rndPrice(price string) string {
 	num, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return "-----"
@@ -25,8 +25,8 @@ func RndPrice(price string) string {
 	return fmt.Sprintf("%.5f", num)
 }
 
-// RndSize rounds last size data to 8 decimal places
-func RndSize(size string) string {
+// rndSize rounds last size data to 8 decimal places
+func rndSize(size string) string {
 	num, err := strconv.ParseFloat(size, 64)
 	if err != nil {
 		return "-----"
@@ -35,8 +35,8 @@ func RndSize(size string) string {
 	return fmt.Sprintf("%.8f", num)
 }
 
-// RndVol rounds volume data to the nearest whole number
-func RndVol(vol string) string {
+// rndVol rounds volume data to the nearest whole number
+func rndVol(vol string) string {
 	num, err := strconv.ParseFloat(vol, 64)
 	if err != nil {
 		return "-----"
@@ -44,9 +44,9 @@ func RndVol(vol string) string {
 	return fmt.Sprint(int64(num + 0.5))
 }
 
-// SetDelta returns price delta rounded to two decimal places as a string
+// setDelta returns price delta rounded to two decimal places as a string
 // returns the print color based on the delta
-func SetDelta(price string, open string) string {
+func setDelta(price string, open string) string {
 	p, _ := strconv.ParseFloat(price, 64)
 	o, _ := strconv.ParseFloat(open, 64)
 	delta := ((p - o) / o) * 100
