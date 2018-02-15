@@ -12,18 +12,20 @@ import "github.com/fatih/color"
 type Product struct {
 	Type string `json:"type"`
 
-	ID    string       `json:"product_id"`
-	Price string       `json:"price"` // getTrades/match
+	ID    string `json:"product_id"`
+	Price string `json:"price"` // getTrades/match
+	Size  string `json:"size"`  // getTrades/match
+
+	High   string `json:"high_24h"`   // getStats/ticker
+	Low    string `json:"low_24h"`    // getStats/ticker
+	Open   string `json:"open_24h"`   // getStats/ticker
+	Volume string `json:"volume_24h"` // getStats/ticker
+
+	Bid string `json:"best_bid"` // getTicker/ticker
+	Ask string `json:"best_ask"` // getTicker/ticker
+
 	Delta string       // % change in price
 	Color *color.Color // set along with delta to color data on display
-	Size  string       `json:"size"` // getTrades/match
-
-	Bid    string `json:"best_bid"`   // ticker
-	Ask    string `json:"best_ask"`   // ticker
-	High   string `json:"high_24h"`   // ticker
-	Low    string `json:"low_24h"`    // ticker
-	Open   string `json:"open_24h"`   // ticker
-	Volume string `json:"volume_24h"` // ticker
 
 	Row string
 }
