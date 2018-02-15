@@ -2,6 +2,8 @@
 gdax is a command line tool that allows the user to get snapshot or streaming quotes from Coinbase's GDAX exchange
 
 ## Installation
+Make sure you have Go installed: https://golang.org/doc/install
+
 To install gdax run:
 ```
 go get github.com/3cb/gdax
