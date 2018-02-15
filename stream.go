@@ -8,8 +8,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func quoteStream(state map[string]Product, max *MaxLengths, pairs []string) {
-	format := quoteSingle(state, max, pairs)
+func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
+	format := quoteSingle(state, pairs, max)
 
 	wsSub := &Subscribe{
 		Type:       "subscribe",

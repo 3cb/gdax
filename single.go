@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-func quoteSingle(state map[string]Product, max *MaxLengths, pairs []string) *FmtPrint {
+func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *FmtPrint {
 	tradeCh := make(chan Product, len(state))
 	statsCh := make(chan Stats, len(state))
 	tickerCh := make(chan Ticker, len(state))
