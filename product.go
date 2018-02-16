@@ -35,6 +35,22 @@ type Product struct {
 	Row string
 }
 
+// fmtRow formats all Product data into a single row so it can be printed
+func (pair Product) fmtRow() string {
+	buf := bytes.Buffer{}
+	buf.WriteString("\n ")
+	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
+	buf.WriteString(pair.Price)
+	buf.WriteString(pair.Size)
+	buf.WriteString(pair.Change)
+	buf.WriteString(pair.Bid)
+	buf.WriteString(pair.Ask)
+	buf.WriteString(pair.High)
+	buf.WriteString(pair.Low)
+	buf.WriteString(pair.Volume)
+	return buf.String()
+}
+
 // Stats contains 24 hour data from REST API:
 // https://docs.gdax.com/#get-24hr-stats
 type Stats struct {
@@ -77,21 +93,5 @@ func setSpcStrm(max int, orig string) string {
 		}
 	}
 	buf.WriteString(orig)
-	return buf.String()
-}
-
-// fmtRow formats all Product data into a single row so it can be printed
-func fmtRow(pair Product) string {
-	buf := bytes.Buffer{}
-	buf.WriteString("\n ")
-	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
-	buf.WriteString(pair.Price)
-	buf.WriteString(pair.Size)
-	buf.WriteString(pair.Change)
-	buf.WriteString(pair.Bid)
-	buf.WriteString(pair.Ask)
-	buf.WriteString(pair.High)
-	buf.WriteString(pair.Low)
-	buf.WriteString(pair.Volume)
 	return buf.String()
 }

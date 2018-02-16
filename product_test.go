@@ -64,7 +64,7 @@ func Test_fmtRow(t *testing.T) {
 	}
 
 	for _, c := range tc {
-		got := fmtRow(c.pair)
+		got := (c.pair).fmtRow()
 		if got != c.expected {
 			t.Errorf("expected %v; got %v", c.expected, got)
 		}
