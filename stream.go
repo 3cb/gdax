@@ -63,9 +63,9 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 			product.Change = setSpcStrm(max.Change, product.Change)
 			state[msg.ID] = product
 		}
-		for k, v := range state {
-			v.Row = v.fmtRow()
-			state[k] = v
+		for k, product := range state {
+			product.Row = product.fmtRow()
+			state[k] = product
 		}
 		clearScr()
 		print(state, format)
