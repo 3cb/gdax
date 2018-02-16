@@ -13,10 +13,10 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 	// concurrent http requests
 	wg := &sync.WaitGroup{}
 	wg.Add(3 * len(state))
-	for _, pair := range state {
-		go getTrades(pair.ID, tradeCh, wg)
-		go getStats(pair.ID, statsCh, wg)
-		go getTicker(pair.ID, tickerCh, wg)
+	for _, product := range state {
+		go getTrades(product.ID, tradeCh, wg)
+		go getStats(product.ID, statsCh, wg)
+		go getTicker(product.ID, tickerCh, wg)
 	}
 	wg.Wait()
 
@@ -46,18 +46,18 @@ func quoteSingle(state map[string]Product, pairs []string, max *MaxLengths) *Fmt
 	}
 
 	// format spacing
-	for k, v := range state {
-		v.Price = setSpc(max.Price, v.Price)
-		v.Change = setSpc(max.Change, v.Change)
-		v.Size = setSpc(max.Size, v.Size)
-		v.Bid = setSpc(max.Bid, v.Bid)
-		v.Ask = setSpc(max.Ask, v.Ask)
-		v.High = setSpc(max.High, v.High)
-		v.Low = setSpc(max.Low, v.Low)
-		v.Open = setSpc(max.Open, v.Open)
-		v.Volume = setSpc(max.Volume, v.Volume)
-		v.Row = v.fmtRow()
-		state[k] = v
+	for k, product := range state {
+		product.Price = setSpc(max.Price, product.Price)
+		product.Change = setSpc(max.Change, product.Change)
+		product.Size = setSpc(max.Size, product.Size)
+		product.Bid = setSpc(max.Bid, product.Bid)
+		product.Ask = setSpc(max.Ask, product.Ask)
+		product.High = setSpc(max.High, product.High)
+		product.Low = setSpc(max.Low, product.Low)
+		product.Open = setSpc(max.Open, product.Open)
+		product.Volume = setSpc(max.Volume, product.Volume)
+		product.Row = product.fmtRow()
+		state[k] = product
 	}
 
 	format := &FmtPrint{}

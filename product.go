@@ -36,18 +36,18 @@ type Product struct {
 }
 
 // fmtRow formats all Product data into a single row so it can be printed
-func (pair Product) fmtRow() string {
+func (p Product) fmtRow() string {
 	buf := bytes.Buffer{}
-	buf.WriteString("\n ")
-	buf.WriteString(strings.Join(strings.Split(pair.ID, "-"), "/"))
-	buf.WriteString(pair.Price)
-	buf.WriteString(pair.Size)
-	buf.WriteString(pair.Change)
-	buf.WriteString(pair.Bid)
-	buf.WriteString(pair.Ask)
-	buf.WriteString(pair.High)
-	buf.WriteString(pair.Low)
-	buf.WriteString(pair.Volume)
+	buf.WriteString(" ")
+	buf.WriteString(strings.Join(strings.Split(p.ID, "-"), "/"))
+	buf.WriteString(p.Price)
+	buf.WriteString(p.Size)
+	buf.WriteString(p.Change)
+	buf.WriteString(p.Bid)
+	buf.WriteString(p.Ask)
+	buf.WriteString(p.High)
+	buf.WriteString(p.Low)
+	buf.WriteString(p.Volume)
 	return buf.String()
 }
 
