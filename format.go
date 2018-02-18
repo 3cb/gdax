@@ -2,8 +2,8 @@
 package main
 
 import (
-	"bytes"
 	"math"
+	"strings"
 )
 
 // MaxLengths is used to format spaces for printing
@@ -36,23 +36,23 @@ type FmtPrint struct {
 
 // fmtColHdr formats column headers and returns a string
 func fmtColHdr(max *MaxLengths) string {
-	buf := bytes.Buffer{}
-	buf.WriteString(" Product")
-	buf.WriteString(setSpc(max.Price, "Price"))
-	buf.WriteString(setSpc(max.Size, "Last Size"))
-	buf.WriteString(setSpc(max.Change, "Change"))
-	buf.WriteString(setSpc(max.Bid, "Bid"))
-	buf.WriteString(setSpc(max.Ask, "Ask"))
-	buf.WriteString(setSpc(max.High, "High"))
-	buf.WriteString(setSpc(max.Low, "Low"))
-	buf.WriteString(setSpc(max.Volume, "Volume"))
-	buf.WriteString(" ")
-	return buf.String()
+	b := strings.Builder{}
+	b.WriteString(" Product")
+	b.WriteString(setSpc(max.Price, "Price"))
+	b.WriteString(setSpc(max.Size, "Last Size"))
+	b.WriteString(setSpc(max.Change, "Change"))
+	b.WriteString(setSpc(max.Bid, "Bid"))
+	b.WriteString(setSpc(max.Ask, "Ask"))
+	b.WriteString(setSpc(max.High, "High"))
+	b.WriteString(setSpc(max.Low, "Low"))
+	b.WriteString(setSpc(max.Volume, "Volume"))
+	b.WriteString(" ")
+	return b.String()
 }
 
 // fmtTitle returns header(or footer with empty string parameter) centered based on total max length, left margin(1), product column(7), and spaces between columns(48)
 func fmtTitle(title string, total int) string {
-	buf := bytes.Buffer{}
+	b := strings.Builder{}
 	var lMargin, rMargin int
 	whitespace := total - len(title)
 
@@ -65,11 +65,11 @@ func fmtTitle(title string, total int) string {
 	}
 
 	for i := 0; i < lMargin; i++ {
-		buf.WriteString(" ")
+		b.WriteString(" ")
 	}
-	buf.WriteString(title)
+	b.WriteString(title)
 	for i := 0; i < rMargin; i++ {
-		buf.WriteString(" ")
+		b.WriteString(" ")
 	}
-	return buf.String()
+	return b.String()
 }

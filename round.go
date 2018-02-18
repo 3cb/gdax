@@ -2,7 +2,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"strconv"
 	"strings"
@@ -50,10 +49,10 @@ func setDelta(price string, open string) string {
 	p, _ := strconv.ParseFloat(price, 64)
 	o, _ := strconv.ParseFloat(open, 64)
 	delta := ((p - o) / o) * 100
-	buf := bytes.Buffer{}
-	buf.WriteString(strconv.FormatFloat(delta, 'f', 2, 64))
-	buf.WriteString("%")
-	return buf.String()
+	b := strings.Builder{}
+	b.WriteString(strconv.FormatFloat(delta, 'f', 2, 64))
+	b.WriteString("%")
+	return b.String()
 }
 
 // SetColor uses the delta filed of Product type to set color either red or green

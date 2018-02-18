@@ -2,7 +2,6 @@
 package main
 
 import (
-	"bytes"
 	"strings"
 
 	"github.com/fatih/color"
@@ -37,18 +36,18 @@ type Product struct {
 
 // fmtRow formats all Product data into a single row so it can be printed
 func (p Product) fmtRow() string {
-	buf := bytes.Buffer{}
-	buf.WriteString(" ")
-	buf.WriteString(strings.Join(strings.Split(p.ID, "-"), "/"))
-	buf.WriteString(p.Price)
-	buf.WriteString(p.Size)
-	buf.WriteString(p.Change)
-	buf.WriteString(p.Bid)
-	buf.WriteString(p.Ask)
-	buf.WriteString(p.High)
-	buf.WriteString(p.Low)
-	buf.WriteString(p.Volume)
-	return buf.String()
+	b := strings.Builder{}
+	b.WriteString(" ")
+	b.WriteString(strings.Join(strings.Split(p.ID, "-"), "/"))
+	b.WriteString(p.Price)
+	b.WriteString(p.Size)
+	b.WriteString(p.Change)
+	b.WriteString(p.Bid)
+	b.WriteString(p.Ask)
+	b.WriteString(p.High)
+	b.WriteString(p.Low)
+	b.WriteString(p.Volume)
+	return b.String()
 }
 
 // Stats contains 24 hour data from REST API:
@@ -71,27 +70,27 @@ type Ticker struct {
 
 // setSpc adds space in front of string based on max length for single quote
 func setSpc(max int, orig string) string {
-	buf := bytes.Buffer{}
-	buf.WriteString("     ")
+	b := strings.Builder{}
+	b.WriteString("     ")
 	diff := max - len(orig)
 	if diff > 0 {
 		for i := 0; i < diff; i++ {
-			buf.WriteString(" ")
+			b.WriteString(" ")
 		}
 	}
-	buf.WriteString(orig)
-	return buf.String()
+	b.WriteString(orig)
+	return b.String()
 }
 
 // setSpcStrm adds spaces to string according to max lengths calculated in single quote
 func setSpcStrm(max int, orig string) string {
-	buf := bytes.Buffer{}
+	b := strings.Builder{}
 	diff := 5 + max - len(orig)
 	if diff > 0 {
 		for i := 0; i < diff; i++ {
-			buf.WriteString(" ")
+			b.WriteString(" ")
 		}
 	}
-	buf.WriteString(orig)
-	return buf.String()
+	b.WriteString(orig)
+	return b.String()
 }
