@@ -34,6 +34,22 @@ type Product struct {
 	Row string
 }
 
+func (p Product) reset() {
+	p.Type = ""
+	p.ID = ""
+	p.Price = ""
+	p.Size = ""
+	p.High = ""
+	p.Low = ""
+	p.Open = ""
+	p.Volume = ""
+	p.Bid = ""
+	p.Ask = ""
+	p.Change = ""
+	p.Color = nil
+	p.Row = ""
+}
+
 // fmtRow formats all Product data into a single row so it can be printed
 func (p Product) fmtRow() string {
 	b := strings.Builder{}

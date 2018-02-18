@@ -31,8 +31,9 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 	}
 	conn.WriteJSON(wsSub)
 
+	msg := Product{}
+	product := Product{}
 	for {
-		msg := Product{}
 
 		err := conn.ReadJSON(&msg)
 		if err != nil {
@@ -42,7 +43,7 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 		}
 
 		if msg.Type == "match" {
-			product := state[msg.ID]
+			product = state[msg.ID]
 			product.Price = setSpcStrm(max.Price, rndPrice(msg.Price))
 			product.Size = setSpcStrm(max.Size, rndSize(msg.Size))
 			product.Change = setDelta(strings.TrimSpace(product.Price), strings.TrimSpace(product.Open))
@@ -51,7 +52,7 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 			state[msg.ID] = product
 
 		} else if msg.Type == "ticker" {
-			product := state[msg.ID]
+			product = state[msg.ID]
 			product.Bid = setSpcStrm(max.Bid, rndPrice(msg.Bid))
 			product.Ask = setSpcStrm(max.Ask, rndPrice(msg.Ask))
 			product.High = setSpcStrm(max.High, rndPrice(msg.High))
@@ -69,5 +70,8 @@ func quoteStream(state map[string]Product, pairs []string, max *MaxLengths) {
 		}
 		clearScr()
 		print(state, format)
+
+		msg.reset()
+		product.reset()
 	}
 }
