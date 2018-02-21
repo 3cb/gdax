@@ -1,6 +1,8 @@
 # gdax
 gdax is a command line tool that allows the user to get snapshot or streaming quotes from Coinbase's GDAX exchange: https://www.gdax.com/trade/BTC-USD
 
+![Diagram](https://images2.imgbox.com/f0/a6/H0bIfdx5_o.png?download=true)
+
 API Docs: https://docs.gdax.com/
 
 ## Installation
@@ -24,6 +26,5 @@ For streaming quotes through a websocket connection run with the `-s` flag:
 ```
 gdax -s
 ```
-![Diagram](https://images2.imgbox.com/f0/a6/H0bIfdx5_o.png?download=true)
 
 **That's it!**
